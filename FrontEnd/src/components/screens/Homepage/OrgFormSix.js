@@ -78,7 +78,23 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 	);
 };
 
-const OrgFormFour = ({
+const days = [
+	{ value: '1', label: '1' },
+	{ value: '2', label: '2' },
+	{ value: '3', label: '3' },
+	{ value: '4', label: '4' },
+	{ value: '5', label: '5' },
+	{ value: '6', label: '6' }
+];
+
+const weeks = [
+	{ value: '1', label: '1' },
+	{ value: '2', label: '2' },
+	{ value: '3', label: '3' },
+	{ value: '4', label: '4' }
+];
+
+const OrgFormSix = ({
 	tags,
 	setTags,
 
@@ -125,23 +141,23 @@ const OrgFormFour = ({
 	...props
 }) => {
 	const [ pageNum, setpageNum ] = useState(1);
-	const [ selectedMilitary, setSelectedMilitary ] = useState([]);
+	const [ requireAdditionalFamily, setRequireAdditionalFamily ] = useState({});
+	const [ isSubscribed, setIsSubscribed ] = useState({});
+	const [ participations, setParticipations ] = useState();
+	const [ emergencyAssistance, setEmergencyAssistance ] = useState('');
 	const [ isAllSelected, setisAllSelected ] = useState(false);
-	const [ serviceEras, setServiceEras ] = useState([]);
-	const [ serveOptionss, setServeOptionss ] = useState([]);
-	const [ isCombatService, setIsCombatService ] = useState(false);
 
-	const [ allSelected, setAllSelected ] = useState({});
+	const [ daysSelected, setDaysSelected ] = useState({});
+	const [ weeksSelected, setWeeksSelected ] = useState({});
 
 	const pageSelectionHandler = () => {
 		switch (pageNum) {
 			case 1:
-				continueHandler(4, {
-					...allSelected,
-					military_status   : selectedMilitary,
-					serivce_era       : serviceEras,
-					discharge_status  : serveOptionss,
-					is_combat_service : isCombatService.label
+				continueHandler(5, {
+					is_additional_family_allowed : requireAdditionalFamily.label,
+					is_subscribed                : isSubscribed.label,
+					fin_assistance_turn_around   : { days: daysSelected.value || '', weeks: weeksSelected.value || '' },
+					particaption_list            : participations
 				});
 				break;
 
@@ -156,14 +172,20 @@ const OrgFormFour = ({
 		return true;
 	};
 
-	// console.log('allSelected', selectedMilitary, serviceEras, serveOptionss, isCombatService);
+	// console.log(
+	// 	'allSelected',
+	// 	requireAdditionalFamily.label,
+	// 	isSubscribed.label,
+	// 	{ days: daysSelected.value || '', weeks: weeksSelected.value || '' },
+	// 	participations
+	// );
 
 	useEffect(() => {
 		if (
-			!isEmpty(selectedMilitary) &&
-			!isEmpty(serviceEras) &&
-			!isEmpty(serveOptionss) &&
-			!isEmpty(isCombatService)
+			!isEmpty(requireAdditionalFamily) &&
+			!isEmpty(isSubscribed) &&
+			!isEmpty(participations) &&
+			(!isEmpty(daysSelected.value) || !isEmpty(weeksSelected.value))
 		) {
 			setisAllSelected(true);
 		}
@@ -177,32 +199,7 @@ const OrgFormFour = ({
 			<FlexContainer flexDirection='column' alignItems='center' marginTop={'0px'} width={'100%'}>
 				<LoadingAnimationPopup showPopup={isLoading} />
 
-				<HeaderOne text={<p>Military Service Details</p>} color={Colors.darkBlack} bold />
-				<CheckBoxes
-					header={checkboxHeader}
-					names={checkboxOpions}
-					selected={selectedMilitary}
-					setSelected={setSelectedMilitary}
-					props={props}
-				/>
-
-				<Spacing space={'50px'} mobileSpace={'50px'} />
-				<CheckBoxes
-					header={'What service eras are eligible for your program?*'}
-					names={checkboxOpionsServiceEras}
-					selected={serviceEras}
-					setSelected={setServiceEras}
-					props={props}
-				/>
-
-				<Spacing space={'50px'} mobileSpace={'50px'} />
-				<CheckBoxes
-					header={'What military discharge status do you serve? (Check all that apply)*'}
-					names={serveOptions}
-					selected={serveOptionss}
-					setSelected={setServeOptionss}
-					props={props}
-				/>
+				<HeaderTwo text={<p>Additional Information</p>} color={Colors.darkBlack} bold />
 
 				<Spacing space={'50px'} mobileSpace={'50px'} />
 				<FlexContainer
@@ -212,15 +209,81 @@ const OrgFormFour = ({
 					justifyContent='space-between'
 					alignItems='space-between'>
 					<FormDropdown
-						title={'Is combat service required to be eligible for your program?*'}
-						value={isCombatService}
+						title={'Are additional family or household members eligible for this program?'}
+						value={requireAdditionalFamily}
 						options={[
-							{ value: 'isCombatService', label: 'Yes' },
-							{ value: 'isCombatService', label: 'No' }
+							{ value: 'requireAdditionalFamily', label: 'Yes' },
+							{ value: 'requireAdditionalFamily', label: 'No' }
 						]}
-						onChange={setIsCombatService}
+						onChange={setRequireAdditionalFamily}
 						required={true}
 					/>
+				</FlexContainer>
+
+				<Spacing space={'50px'} mobileSpace={'50px'} />
+				<FlexContainer
+					mobileWidth={'266px'}
+					width={'600px'}
+					flexDirection='row'
+					justifyContent='space-between'
+					alignItems='space-between'>
+					<FormDropdown
+						title={'I would like to receive more information on partnering with Illinois Joining Forces.'}
+						value={isSubscribed}
+						options={[ { value: 'isSubscribed', label: 'Yes' }, { value: 'isSubscribed', label: 'No' } ]}
+						onChange={setIsSubscribed}
+						required={true}
+					/>
+				</FlexContainer>
+
+				<Spacing space={'50px'} mobileSpace={'50px'} />
+
+				<FlexContainer flexDirection={'column'} mobileWidth={'266px'} width={'600px'}>
+					<Spacing space={'50px'} mobileSpace={'50px'} />
+					<StyledForm>
+						<FormInput
+							cancellable={!isEmpty(participations)}
+							onChange={setParticipations}
+							title={
+								'Do you participate in an IJF Veteran Support Community or other local collaborative? (If yes, please list name and location.)'
+							}
+							value={participations}
+							required={true}
+						/>
+					</StyledForm>
+				</FlexContainer>
+
+				<Spacing space={'50px'} mobileSpace={'50px'} />
+
+				<FlexContainer
+					mobileWidth={'266px'}
+					width={'600px'}
+					flexDirection='row'
+					justifyContent='space-between'
+					alignItems='space-between'>
+					<Note
+						text={<p>What is your limit for emergency financial assistance? (N/A if it does not apply)</p>}
+						color={Colors.darkBlack}
+						bold
+					/>
+					<Container width={'210px'} mobileWidth={'120px'}>
+						<FormDropdown
+							title={'Days'}
+							value={daysSelected}
+							options={days}
+							onChange={setDaysSelected}
+							required={true}
+						/>
+					</Container>
+					<Container width={'210px'} mobileWidth={'120px'}>
+						<FormDropdown
+							title={'Weeks'}
+							value={weeksSelected}
+							options={weeks}
+							onChange={setWeeksSelected}
+							required={true}
+						/>
+					</Container>
 				</FlexContainer>
 
 				{(isAllFilledPageThree || isAllSelected) && (
@@ -233,4 +296,4 @@ const OrgFormFour = ({
 	);
 };
 
-export { OrgFormFour };
+export { OrgFormSix };

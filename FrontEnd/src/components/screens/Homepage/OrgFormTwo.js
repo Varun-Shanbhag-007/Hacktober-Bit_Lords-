@@ -131,13 +131,20 @@ const OrgFormTwo = ({
 
 	...props
 }) => {
+	console.log('Inside 2');
 	const [ selected, setSelected ] = useState([]);
 	const [ isOnileSelected, setIsOnileSelected ] = useState();
 	const [ timeSelectedStart, setTimeSelectedStart ] = useState();
 	const [ timeSelectedEnd, setTimeSelectedEnd ] = useState();
 
 	return (
-		<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'180px'} paddingLeft={'10%'} paddingRight={'10%'}>
+		<Container
+			width={'100vw'}
+			height={'100vh'}
+			paddingTop={'70px'}
+			paddingBottom={'180px'}
+			paddingLeft={'10%'}
+			paddingRight={'10%'}>
 			<FCAppBar {...props} />
 
 			<FlexContainer flexDirection='column' alignItems='center' marginTop={'0px'} width={'100%'}>
@@ -151,7 +158,7 @@ const OrgFormTwo = ({
 					setSelected={setSelected}
 					props={props}
 				/>
-
+				{console.log('Inside 2x')}
 				<Spacing space={'50px'} mobileSpace={'50px'} />
 				<FlexContainer
 					mobileWidth={'266px'}

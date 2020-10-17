@@ -10,12 +10,13 @@ import { OrgFormTwo } from './OrgFormTwo';
 import { OrgFormThree } from './OrgFormThree';
 import { OrgFormFour } from './OrgFormFour';
 import { OrgFormFive } from './OrgFormFive';
+import { OrgFormSix } from './OrgFormSix';
 
 const HomepageController = (props) => {
 	// Page One Controls
 	const [ isLoading, setIsLoading ] = useState(!true);
 	const [ isAllFilled, setIsAllFilled ] = useState(false);
-	const [ showPage, setShowPage ] = useState(5);
+	const [ showPage, setShowPage ] = useState(1);
 	const [ orgStreetAddress, setOrgStreetAddress ] = useState('');
 	const [ zipCode, setZipCode ] = useState('');
 	const [ orgStateName, setOrgStateName ] = useState('');
@@ -29,7 +30,11 @@ const HomepageController = (props) => {
 	const [ orgFax, setOrgFax ] = useState('');
 
 	// orgStreetAddress, zipCode, orgStateName, orgCityName, OrgWebsite, orgEmail, orgFax
-	const [ completeData, setCompleteData ] = useState({});
+	const [ completeData, setCompleteData ] = useState({
+		org_name  : 'ORG_NAME',
+		org_ph_no : '3125398877',
+		org_key   : 'asdgj@df.com'
+	});
 
 	const validateAllFields = () => {
 		!isEmpty(orgStreetAddress) &&
@@ -165,6 +170,37 @@ const HomepageController = (props) => {
 	// Page Three Controls
 	const [ tags, setTags ] = useState('');
 
+	// Post Data
+	const validateAndPostData = () => {
+		axios({
+			headers : {
+				'Access-Control-Allow-Origin' : '*',
+				'Content-Type'                : 'application/json'
+			},
+			method  : 'POST',
+			mode    : 'cors',
+			data    : completeData,
+			url     : `${process.env.REACT_APP_API_BASE_URL}/org/addOrgData/`
+		}).then(
+			(response) => {
+				console.log('response', response);
+			},
+			(err) => {
+				console.log('err', err);
+			}
+		);
+	};
+
+	useEffect(
+		() => {
+			if (!isEmpty(completeData.particaption_list)) {
+				validateAndPostData();
+				return props.history.push('./main');
+			}
+		},
+		[ completeData ]
+	);
+
 	const continueHandler = (pageNum, content) => {
 		console.log('content', content);
 		let data = {};
@@ -210,6 +246,12 @@ const HomepageController = (props) => {
 					...content
 				};
 				break;
+
+			case 6:
+				data = {
+					...content
+				};
+				break;
 		}
 
 		setCompleteData({ ...completeData, ...data });
@@ -217,6 +259,7 @@ const HomepageController = (props) => {
 	};
 
 	console.log('All content', completeData);
+	console.log('showPage', showPage);
 
 	// Screen Returns
 	switch (showPage) {
@@ -253,6 +296,7 @@ const HomepageController = (props) => {
 			);
 
 		case 2:
+			console.log('I Am Her!');
 			return (
 				<OrgFormTwo
 					isAllFilledPageTwo={isAllFilledPageTwo}
@@ -282,8 +326,10 @@ const HomepageController = (props) => {
 
 		case 5:
 			return <OrgFormFive continueHandler={continueHandler} />;
-
+		case 6:
+			return <OrgFormSix continueHandler={continueHandler} />;
 		default:
+			console.log('default showPage', showPage);
 			break;
 	}
 };
