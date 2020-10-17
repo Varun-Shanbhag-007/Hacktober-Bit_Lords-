@@ -1,9 +1,9 @@
 from app.User import bp as userBp
 from flask import Flask,request, jsonify, make_response
-import Utility.DbController as DbController
+import Utility.dbController as dbController
 
 app = Flask(__name__)
-db = DbController.connect()
+db = dbController.connect()
 app.register_blueprint(userBp, url_prefix="/")
 
 @app.errorhandler(404)

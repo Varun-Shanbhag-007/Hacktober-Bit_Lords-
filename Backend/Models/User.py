@@ -1,8 +1,8 @@
 from Models.MainModel import MainModel
-import Utility.DbController as DbController
+import Utility.dbController as dbController
 
 class User(MainModel):
-    db_collection = DbController.connect()["user"]
+    db_collection = dbController.connect()["user"]
 
     @property
     def find(self):
