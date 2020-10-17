@@ -26,6 +26,7 @@ const StyledInput = styled(Input)`
   padding: 0px;
   margin: 10px 0px 0px 0px;
 
+
   @media (max-width: 768px) {
     margin: 17px 0px 0px 0px;
   }
@@ -64,6 +65,7 @@ const FormInput = ({
 	title,
 	value,
 	onChange,
+	onChangeHandler=null,
 	handleBlur = null,
 	placeholder = '',
 	error,
@@ -72,6 +74,7 @@ const FormInput = ({
 	required = false,
 	cancellable,
 	icon = null,
+	readOnly,
 	handleKeyDown = null
 }) => {
 	const [ active, setActive ] = useState(false);
@@ -102,8 +105,12 @@ const FormInput = ({
 						{icon}
 					</FlexContainer>
 					<StyledInput
+						readOnly={readOnly}
 						value={value}
-						onChange={(e) => onChange && onChange(e.target.value)}
+						onChange={(e) => {
+							onChange && onChange(e.target.value);
+							onChangeHandler && onChangeHandler();
+						}}
 						type='text'
 						placeholder={placeholder}
 						onFocus={() => {

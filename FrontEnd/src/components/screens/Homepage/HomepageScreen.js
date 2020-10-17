@@ -7,30 +7,7 @@ import { FormInput, FormPasswordInput } from '../../../styles/Forms';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import FCAppBar from '../../FCAppBar/FCAppBar';
-
-const PageContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-
-	@media (min-width: 768px) {
-		height: 90vh;
-	}
-
-	max-width: 1160px;
-`;
-
-const HeaderContainer = styled.div`
-	margin-top: 10vh;
-	margin-bottom: 4vh;
-
-	@media (max-width: 768px) {
-		width: 251px;
-		text-align: center;
-		margin-top: 5vh;
-	}
-`;
+import LoadingAnimationPopup from '../../Loader/loader';
 
 const StyledForm = styled.div`
 	@media (max-width: 768px) {
@@ -42,20 +19,57 @@ const StyledForm = styled.div`
 	}
 `;
 
-const ButtonContainer = styled.div`
-	margin: 70px 0px 20px 0px;
+const ButtonContainerX = styled.div`
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 176px;
 
-	@media (max-width: 60px) {
-		margin: 70px 0px 20px 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+
+	@media (max-width: 768px) {
+		height: 120px;
 	}
 `;
 
+const LoaderContainerX = styled.div`
+	position: fixed;
+	bottom: 50%;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	// background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+`;
+
 const HomepageScreen = ({
-	allFilled,
+	isLoading,
+	validateAllFields,
+	isAllFilled,
 	orgStreetAddress,
 	setOrgStreetAddress,
+	zipCode,
+	setZipCode,
 	orgStateName,
 	setOrgStateName,
+	orgCityName,
+	setOrgCityName,
+	zipError,
+	isZipError,
+	zipErrorMessage,
+	validateAndFetchZip,
+	OrgWebsite,
+	validateWebsite,
+	setOrgWebsite,
+	websiteError,
+
 	allowLogin,
 	emailOrCell,
 	error,
@@ -73,62 +87,73 @@ const HomepageScreen = ({
 }) => (
 	<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'70px'} paddingLeft={'10%'} paddingRight={'10%'}>
 		<FCAppBar {...props} />
-
 		<FlexContainer flexDirection='column' alignItems='center' marginTop={'0px'} width={'100%'}>
+			<LoadingAnimationPopup showPopup={isLoading} />
 			<HeaderOne text={<p>Organization Details</p>} color={Colors.darkBlack} bold />
 
 			<FlexContainer flexDirection={'column'} mobileWidth={'266px'} width={'600px'}>
 				<StyledForm>
 					<FormInput
 						cancellable={!isEmpty(orgStreetAddress)}
-						error={allFilled && isEmpty(orgStreetAddress)}
+						error={isAllFilled && isEmpty(orgStreetAddress)}
 						onChange={setOrgStreetAddress}
 						title={'Street Address'}
 						value={orgStreetAddress}
+						handleBlur={validateAllFields}
+						required={true}
 					/>
 				</StyledForm>
 
 				<StyledForm>
 					<FormInput
-						cancellable={true}
-						error={passwordError}
+						cancellable={!isEmpty(zipCode)}
+						error={isZipError}
+						errorMessage={zipErrorMessage}
 						handleKeyDown={handleKeyDown}
-						onChange={setPassword}
+						onChange={setZipCode}
 						title={'Zip Code'}
-						value={password}
+						value={zipCode}
+						handleBlur={() => {
+							validateAllFields();
+							zipError('check');
+							validateAndFetchZip();
+						}}
+						required={true}
+						onChangeHandler={zipError}
 					/>
 				</StyledForm>
 
 				<StyledForm>
 					<FormInput
-						cancellable={true}
-						error={passwordError}
 						handleKeyDown={handleKeyDown}
-						onChange={setOrgStateName}
 						title={'State'}
 						value={orgStateName}
+						handleBlur={validateAllFields}
+						readOnly={true}
 					/>
 				</StyledForm>
 
 				<StyledForm>
 					<FormInput
-						cancellable={true}
-						error={passwordError}
 						handleKeyDown={handleKeyDown}
-						onChange={setPassword}
 						title={'City'}
-						value={password}
+						value={orgCityName}
+						handleBlur={validateAllFields}
+						readOnly={true}
 					/>
 				</StyledForm>
 
 				<StyledForm>
 					<FormInput
-						cancellable={true}
-						error={passwordError}
+						cancellable={!isEmpty(OrgWebsite)}
+						error={websiteError && websiteError[0]}
+						errorMessage={websiteError && websiteError[1]}
 						handleKeyDown={handleKeyDown}
-						onChange={setPassword}
+						onChange={setOrgWebsite}
 						title={'Website'}
-						value={password}
+						value={OrgWebsite}
+						handleBlur={() => validateWebsite('validate')}
+						onChangeHandler={()=>validateWebsite('setNull')}
 					/>
 				</StyledForm>
 
@@ -140,6 +165,7 @@ const HomepageScreen = ({
 						onChange={setPassword}
 						title={'General Email'}
 						value={password}
+						handleBlur={validateAllFields}
 					/>
 				</StyledForm>
 
@@ -151,9 +177,15 @@ const HomepageScreen = ({
 						onChange={setPassword}
 						title={'Main Fax'}
 						value={password}
+						handleBlur={validateAllFields}
 					/>
 				</StyledForm>
 			</FlexContainer>
+			{isAllFilled && (
+				<ButtonContainerX>
+					<Button active onClick={validateAllFields} text={'Continue'} />
+				</ButtonContainerX>
+			)}
 		</FlexContainer>
 	</Container>
 );
