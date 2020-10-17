@@ -1,4 +1,5 @@
 
+from app.Engine import bp
 from uszipcode import SearchEngine
 
 zip_search_engine = SearchEngine(simple_zipcode=True)
@@ -7,7 +8,7 @@ __IS_VALID__ = "isvalid"
 __CITY__ = "city"
 __STATE__ = "state"
 
-
+@bp.route('/zip/<zipcode_str>', methods = ['GET'])
 def get_zipcode_info(zipcode_str):
 
     """
