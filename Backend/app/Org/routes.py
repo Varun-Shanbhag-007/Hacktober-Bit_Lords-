@@ -14,11 +14,9 @@ def saveData():
 
 @bp.route('/org/getOrg/<email>')
 def getOrg(email):
-    print(email)
-    data = {"org_key": "asdgj@df.com" }
+    data = {"org_key": email }
     org = Org(data)
     val = org.find
-    print(val)
     if val is None:
         abort(404)
     else:
