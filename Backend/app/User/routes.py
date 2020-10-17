@@ -6,6 +6,8 @@ from flask import jsonify, make_response, abort
 def login(email):
     data = { "email": email }
     user = User(data)
-    if user.find is None:
+    val = user.find
+    if val is None:
         abort(404)
-    return make_response(jsonify({"status":"success"}), 200)
+    else:
+        return make_response(jsonify({"user_type":val['userType']}), 200)
