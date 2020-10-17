@@ -61,7 +61,12 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				alignItems='space-between'>
 				{names.map((val, idx) => (
 					<Container minWidth={'100px'}>
-						<input type='checkbox' {...props} onClick={() => selectedHandler(val)} />
+						<input
+							type='checkbox'
+							{...props}
+							onClick={() => selectedHandler(val)}
+							style={{ padding: '20px', transform: 'scale(1.5)' }}
+						/>
 						<Container width={'20px'} />
 						<Note text={<p>{val}</p>} />
 					</Container>
@@ -70,6 +75,33 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 		</Container>
 	);
 };
+
+const time = [
+	{ value: '12:00 AM', label: '12:00 AM' },
+	{ value: '01:00 AM', label: '01:00 AM' },
+	{ value: '02:00 AM', label: '02:00 AM' },
+	{ value: '03:00 AM', label: '03:00 AM' },
+	{ value: '04:00 AM', label: '04:00 AM' },
+	{ value: '05:00 AM', label: '05:00 AM' },
+	{ value: '06:00 AM', label: '06:00 AM' },
+	{ value: '07:00 AM', label: '07:00 AM' },
+	{ value: '08:00 AM', label: '08:00 AM' },
+	{ value: '09:00 AM', label: '09:00 AM' },
+	{ value: '10:00 AM', label: '10:00 AM' },
+	{ value: '11:00 AM', label: '11:00 AM' },
+	{ value: '12:00 PM', label: '12:00 PM' },
+	{ value: '01:00 PM', label: '01:00 PM' },
+	{ value: '02:00 PM', label: '02:00 PM' },
+	{ value: '03:00 PM', label: '03:00 PM' },
+	{ value: '04:00 PM', label: '04:00 PM' },
+	{ value: '05:00 PM', label: '05:00 PM' },
+	{ value: '06:00 PM', label: '06:00 PM' },
+	{ value: '07:00 PM', label: '07:00 PM' },
+	{ value: '08:00 PM', label: '08:00 PM' },
+	{ value: '09:00 PM', label: '09:00 PM' },
+	{ value: '10:00 PM', label: '10:00 PM' },
+	{ value: '11:00 PM', label: '11:00 PM' }
+];
 
 const OrgFormTwo = ({
 	isLoading,
@@ -83,27 +115,8 @@ const OrgFormTwo = ({
 	setPocEmail,
 	pocEmailError,
 	validatePocEmail,
-
-	orgStreetAddress,
-	setOrgStreetAddress,
-	zipCode,
-	setZipCode,
-	orgStateName,
-	setOrgStateName,
-	orgCityName,
-	setOrgCityName,
-	zipError,
-	isZipError,
-	zipErrorMessage,
-	validateAndFetchZip,
-	OrgWebsite,
-	validateWebsite,
-	setOrgWebsite,
-	websiteError,
-	orgEmail,
-	setOrgEmail,
-	emailError,
-	validateEmail,
+	offTime,
+	setOffTime,
 	continueHandler,
 	pocPhone,
 	setPocPhone,
@@ -120,6 +133,8 @@ const OrgFormTwo = ({
 }) => {
 	const [ selected, setSelected ] = useState([]);
 	const [ isOnileSelected, setIsOnileSelected ] = useState();
+	const [ timeSelectedStart, setTimeSelectedStart ] = useState();
+	const [ timeSelectedEnd, setTimeSelectedEnd ] = useState();
 
 	return (
 		<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'180px'} paddingLeft={'10%'} paddingRight={'10%'}>
@@ -136,8 +151,35 @@ const OrgFormTwo = ({
 					setSelected={setSelected}
 					props={props}
 				/>
-				<Spacing space={'50px'} mobileSpace={'50px'} />
 
+				<Spacing space={'50px'} mobileSpace={'50px'} />
+				<FlexContainer
+					mobileWidth={'266px'}
+					width={'600px'}
+					flexDirection='row'
+					justifyContent='space-between'
+					alignItems='space-between'>
+					<Container width={'210px'} mobileWidth={'120px'}>
+						<FormDropdown
+							title={'Start Time'}
+							value={timeSelectedStart}
+							options={time}
+							onChange={setTimeSelectedStart}
+							required={true}
+						/>
+					</Container>
+					<Container width={'210px'} mobileWidth={'120px'}>
+						<FormDropdown
+							title={'End Time'}
+							value={timeSelectedEnd}
+							options={time}
+							onChange={setTimeSelectedEnd}
+							required={true}
+						/>
+					</Container>
+				</FlexContainer>
+
+				<Spacing space={'50px'} mobileSpace={'50px'} />
 				<FlexContainer
 					mobileWidth={'266px'}
 					width={'600px'}
@@ -213,10 +255,15 @@ const OrgFormTwo = ({
 						/>
 					</StyledForm>
 				</FlexContainer>
-
+				{/* {console.log('isAllFilledPageTwo', isAllFilledPageTwo)} */}
 				{isAllFilledPageTwo && (
 					<ButtonContainerX>
-						<Button active onClick={() => continueHandler(1)} text={'Continue'} />
+						<Button
+							active
+							onClick={() =>
+								continueHandler(2, [ selected, isOnileSelected, timeSelectedStart, timeSelectedEnd ])}
+							text={'Continue'}
+						/>
 					</ButtonContainerX>
 				)}
 			</FlexContainer>

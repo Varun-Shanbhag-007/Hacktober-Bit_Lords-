@@ -3,15 +3,19 @@ import Cookie from 'js-cookie';
 import { get, isEmpty } from 'lodash';
 import React, { useEffect, useState, Fragment } from 'react';
 
+import Loader from '../../Loader/loader';
+
 import { OrgFormOne } from './OrgFormOne';
 import { OrgFormTwo } from './OrgFormTwo';
-import Loader from '../../Loader/loader';
+import { OrgFormThree } from './OrgFormThree';
+import { OrgFormFour } from './OrgFormFour';
+import { OrgFormFive } from './OrgFormFive';
 
 const HomepageController = (props) => {
 	// Page One Controls
 	const [ isLoading, setIsLoading ] = useState(!true);
 	const [ isAllFilled, setIsAllFilled ] = useState(false);
-	const [ showPage, setShowPage ] = useState(1);
+	const [ showPage, setShowPage ] = useState(5);
 	const [ orgStreetAddress, setOrgStreetAddress ] = useState('');
 	const [ zipCode, setZipCode ] = useState('');
 	const [ orgStateName, setOrgStateName ] = useState('');
@@ -73,6 +77,8 @@ const HomepageController = (props) => {
 			},
 			(err) => {
 				console.log('err', err);
+				setOrgCityName('P : Chicago');
+				setOrgStateName('P : IL');
 			}
 		);
 	};
@@ -112,13 +118,16 @@ const HomepageController = (props) => {
 	};
 
 	// Page Two Controls
-	const [ isAllFilledPageTwo, setIsAllFilledPageTwo ] = useState(!false);
+	const [ isAllFilledPageTwo, setIsAllFilledPageTwo ] = useState(false);
 	const [ pocName, setPocName ] = useState('');
 	const [ pocTitle, setPocTitle ] = useState('');
 	const [ pocEmail, setPocEmail ] = useState('');
 	const [ pocEmailError, setPocEmailError ] = useState([ false, '' ]);
 	const [ pocPhone, setPocPhone ] = useState('');
 	const [ pocPhoneError, setPocPhoneError ] = useState([ false, '' ]);
+	const [ offTime, setOffTime ] = useState({ start: '', end: '' });
+
+	// pocName, pocTitle, pocEmailError, pocPhoneError
 
 	const validatePocEmail = (val) => {
 		if (val == 'setNull') {
@@ -144,10 +153,20 @@ const HomepageController = (props) => {
 	};
 
 	const validateAllFieldsPageTwo = () => {
-		console.log(pocName);
+		!isEmpty(pocName) &&
+			!isEmpty(pocTitle) &&
+			!isEmpty(pocEmail) &&
+			!pocEmailError[0] &&
+			!isEmpty(pocPhone) &&
+			!pocPhoneError[0] &&
+			setIsAllFilledPageTwo(true);
 	};
 
-	const continueHandler = (pageNum) => {
+	// Page Three Controls
+	const [ tags, setTags ] = useState('');
+
+	const continueHandler = (pageNum, content) => {
+		console.log('content', content);
 		let data = {};
 		switch (pageNum) {
 			case 1:
@@ -160,13 +179,44 @@ const HomepageController = (props) => {
 					org_mail           : orgEmail,
 					org_fax            : orgFax
 				};
+				break;
+
+			case 2:
+				data = {
+					poc_name     : pocName,
+					poc_title    : pocTitle,
+					poc_email    : pocEmail,
+					poc_ph_no    : pocPhone,
+					off_days     : content[0],
+					off_isonline : content[1].value,
+					off_time     : { start: content[2].value, end: content[3].value }
+				};
+				break;
+
+			case 3:
+				data = {
+					...content
+				};
+				break;
+
+			case 4:
+				data = {
+					...content
+				};
+				break;
+
+			case 5:
+				data = {
+					...content
+				};
+				break;
 		}
 
 		setCompleteData({ ...completeData, ...data });
 		return setShowPage(pageNum + 1);
 	};
 
-	console.log(completeData);
+	console.log('All content', completeData);
 
 	// Screen Returns
 	switch (showPage) {
@@ -205,6 +255,7 @@ const HomepageController = (props) => {
 		case 2:
 			return (
 				<OrgFormTwo
+					isAllFilledPageTwo={isAllFilledPageTwo}
 					validateAllFieldsPageTwo={validateAllFieldsPageTwo}
 					pocName={pocName}
 					setPocName={setPocName}
@@ -218,8 +269,19 @@ const HomepageController = (props) => {
 					setPocPhone={setPocPhone}
 					pocPhoneError={pocPhoneError}
 					validatePocPhone={validatePocPhone}
+					offTime={offTime}
+					setOffTime={setOffTime}
+					continueHandler={continueHandler}
 				/>
 			);
+		case 3:
+			return <OrgFormThree continueHandler={continueHandler} tags={tags} setTags={setTags} />;
+
+		case 4:
+			return <OrgFormFour continueHandler={continueHandler} />;
+
+		case 5:
+			return <OrgFormFive continueHandler={continueHandler} />;
 
 		default:
 			break;
