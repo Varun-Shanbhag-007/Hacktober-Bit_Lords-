@@ -65,7 +65,7 @@ const FormInput = ({
 	title,
 	value,
 	onChange,
-	onChangeHandler=null,
+	onChangeHandler = null,
 	handleBlur = null,
 	placeholder = '',
 	error,

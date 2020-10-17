@@ -17,13 +17,15 @@ const PopupOuterContainer = styled.div`
 `;
 
 const LoaderContainer = styled.div`
-	background-color: white;
+	// background-color: red;
+	display: flex;
+	flex-direction: column;
 	border-radius: 20px;
 	z-index: 101;
 	// position: fixed;
-	width: 120px;
-	height: 120px;
-	padding-top: 25px;
+	// width: 120px;
+	// height: 120px;
+	padding: 30px;
 	box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
 	overflow: hidden;
 `;
@@ -46,14 +48,7 @@ const LoadingAnimationPopup = ({ showPopup }) => {
 					<CenterAlign>
 						<PopupOuterContainer />
 						<LoaderContainer>
-							<img
-								alt={'loading...'}
-								src={sourceImage}
-								style={{
-									maxHeight : '250px',
-									maxWidth  : '250px'
-								}}
-							/>
+							<img alt={'loading...'} src={sourceImage} />
 						</LoaderContainer>
 					</CenterAlign>
 				</Fragment>
