@@ -138,7 +138,7 @@ const OrgFormFive = ({
 					is_dd_214            : requireDD.label,
 					fin_assistance_limit : emergencyAssistance,
 					is_disability_req    : requireDisability.label,
-					program_req_geo_area : requireGeo.label
+					program_req_geo_area : requireGeo
 				});
 				break;
 
@@ -212,21 +212,20 @@ const OrgFormFive = ({
 				</FlexContainer>
 
 				<Spacing space={'50px'} mobileSpace={'50px'} />
-				<FlexContainer
-					mobileWidth={'266px'}
-					width={'600px'}
-					flexDirection='row'
-					justifyContent='space-between'
-					alignItems='space-between'>
-					<FormDropdown
-						title={
-							'Do clients have to reside in a certain geographic area or county to be eligible for this program? (If yes, please list.)'
-						}
-						value={requireGeo}
-						options={[ { value: 'requireGeo', label: 'Yes' }, { value: 'requireGeo', label: 'No' } ]}
-						onChange={setRequireGeo}
-						required={true}
-					/>
+
+				<FlexContainer flexDirection={'column'} mobileWidth={'266px'} width={'600px'}>
+					<Spacing space={'50px'} mobileSpace={'50px'} />
+					<StyledForm>
+						<FormInput
+							cancellable={!isEmpty(emergencyAssistance)}
+							onChange={setRequireGeo}
+							title={
+								'Do clients have to reside in a certain geographic area or county to be eligible for this program? (If yes, please list.)'
+							}
+							value={requireGeo}
+							required={true}
+						/>
+					</StyledForm>
 				</FlexContainer>
 
 				{/* What is your limit for emergency financial assistance? (N/A if it does not apply) */}
