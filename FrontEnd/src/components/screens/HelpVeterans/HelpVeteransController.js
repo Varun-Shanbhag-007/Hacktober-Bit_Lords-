@@ -159,6 +159,7 @@ const HelpVeteransController = (props) => {
 		[ zipcode, searchKey, selectedcategory ]
 	);
 
+	console.log('All Data', allData);
 	// Screen Returns
 	return (
 		<HelpVeteransScreen

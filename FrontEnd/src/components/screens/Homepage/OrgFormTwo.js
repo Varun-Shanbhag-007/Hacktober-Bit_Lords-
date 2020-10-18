@@ -22,11 +22,11 @@ const StyledForm = styled.div`
 const ButtonContainerX = styled.div`
 	position: fixed;
 	bottom: 0;
-	width: 100%;
+	width: 40%;
 	height: 176px;
 
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 
 	background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
@@ -127,10 +127,10 @@ const OrgFormTwo = ({
 	pocPhoneError,
 	validatePocPhone,
 	existingData,
-
+	backHandler,
 	checkboxOpions = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
 	checkboxHeader = 'Hours Of Operation',
-
+	
 	isOnline = [ 'Yes', 'No' ],
 	isOnlineCheckboxHeader = 'Have Online Operation',
 
@@ -290,6 +290,8 @@ const OrgFormTwo = ({
 				</FlexContainer>
 				{(!isEmpty(pocPhone) || isAllFilledPageTwo) && (
 					<ButtonContainerX>
+						<Button onClick={backHandler} text={'Back'} />
+
 						<Button
 							active
 							onClick={() =>

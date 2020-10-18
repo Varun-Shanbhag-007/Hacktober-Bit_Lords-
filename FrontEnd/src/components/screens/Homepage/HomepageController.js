@@ -379,6 +379,10 @@ const HomepageController = (props) => {
 		return setShowPage(pageNum + 1);
 	};
 
+	const backHandler = () => {
+		setShowPage(showPage - 1);
+	};
+
 	// Screen Returns
 	if (showOptionalScreen) {
 		return (
@@ -390,7 +394,14 @@ const HomepageController = (props) => {
 		);
 	}
 	if (showAdminPage) {
-		return <MakeAdminPage setshowAdminPage={setshowAdminPage} updateUserType={updateUserType} setIsLoading={setIsLoading} props={props} />;
+		return (
+			<MakeAdminPage
+				setshowAdminPage={setshowAdminPage}
+				updateUserType={updateUserType}
+				setIsLoading={setIsLoading}
+				props={props}
+			/>
+		);
 	}
 	else {
 		switch (showPage) {
@@ -449,6 +460,7 @@ const HomepageController = (props) => {
 						setOffTime={setOffTime}
 						continueHandler={continueHandler}
 						existingData={existingData}
+						backHandler={backHandler}
 					/>
 				);
 			case 3:
@@ -458,16 +470,17 @@ const HomepageController = (props) => {
 						tags={tags}
 						setTags={setTags}
 						existingData={existingData}
+						backHandler={backHandler}
 					/>
 				);
 
 			case 4:
-				return <OrgFormFour continueHandler={continueHandler} existingData={existingData} />;
+				return <OrgFormFour continueHandler={continueHandler} existingData={existingData} backHandler={backHandler} />;
 
 			case 5:
-				return <OrgFormFive continueHandler={continueHandler} existingData={existingData} />;
+				return <OrgFormFive continueHandler={continueHandler} existingData={existingData} backHandler={backHandler}/>;
 			case 6:
-				return <OrgFormSix continueHandler={continueHandler} existingData={existingData} />;
+				return <OrgFormSix continueHandler={continueHandler} existingData={existingData} backHandler={backHandler} />;
 			default:
 				console.log('default showPage', showPage);
 				break;

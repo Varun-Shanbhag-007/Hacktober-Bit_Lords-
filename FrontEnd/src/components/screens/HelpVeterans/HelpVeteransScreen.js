@@ -129,9 +129,10 @@ const ResultCard = ({ val, zipcode }) => {
 									alignItems='flex-start'
 									textAlign='start'>
 									<Container width={'100%'}>
+									<Note text={<p>{`Point of Contact : `}</p>} bold={700} color={'#fc7233'} />
 										<Note
 											text={
-												<p>{`POC | Email ${val.poc_email} | Name: ${val.poc_name} | Title: ${val.poc_title} | Phone: ${val.poc_ph_no}`}</p>
+												<p>{`Email ${val.poc_email} | Name: ${val.poc_name} | Title: ${val.poc_title} | Phone: ${val.poc_ph_no}`}</p>
 											}
 										/>
 									</Container>
@@ -148,6 +149,11 @@ const ResultCard = ({ val, zipcode }) => {
 												)} | Is Combat Service: ${val.is_combat_service}`}</p>
 											}
 										/>
+									</Container>
+									{console.log('val.program_category', val.program_category)}
+									<Container width={'100%'}>
+										<Note text={<p>{`Services offered : `}</p>} bold={700} color={'#fc7233'} />
+										<Note text={<p>{`${val.program_category}`}</p>} />
 									</Container>
 								</FlexContainer>
 							</Container>

@@ -22,7 +22,7 @@ const StyledForm = styled.div`
 const ButtonContainerX = styled.div`
 	position: fixed;
 	bottom: 0;
-	width: 100%;
+	width: 40%;
 	height: 176px;
 
 	display: flex;

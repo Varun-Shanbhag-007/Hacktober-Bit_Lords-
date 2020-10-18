@@ -22,11 +22,11 @@ const StyledForm = styled.div`
 const ButtonContainerX = styled.div`
 	position: fixed;
 	bottom: 0;
-	width: 100%;
+	width: 40%;
 	height: 176px;
 
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 
 	background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
@@ -116,6 +116,7 @@ const OrgFormSix = ({
 	setPocPhone,
 	pocPhoneError,
 	validatePocPhone,
+	backHandler,
 	checkboxOpions = [
 		'Active Duty',
 		'Guard/Reserve',
@@ -316,7 +317,8 @@ const OrgFormSix = ({
 
 				{(!isEmpty(existingData) || (isAllFilledPageThree || isAllSelected)) && (
 					<ButtonContainerX>
-						<Button active onClick={pageSelectionHandler} text={'Continue'} />
+						<Button onClick={backHandler} text={'Back'} />
+						<Button active onClick={pageSelectionHandler} text={'Submit'} />
 					</ButtonContainerX>
 				)}
 			</FlexContainer>
