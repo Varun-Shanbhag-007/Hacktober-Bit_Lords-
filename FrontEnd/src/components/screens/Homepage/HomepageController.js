@@ -14,7 +14,7 @@ import { OrgFormSix } from './OrgFormSix';
 
 const HomepageController = (props) => {
 	// Page One Controls
-	const [ isLoading, setIsLoading ] = useState(!true);
+	const [ isLoading, setIsLoading ] = useState(true);
 	const [ isAllFilled, setIsAllFilled ] = useState(false);
 	const [ showPage, setShowPage ] = useState(1);
 	const [ orgName, setOrgName ] = useState('');
@@ -34,6 +34,12 @@ const HomepageController = (props) => {
 	// orgStreetAddress, zipCode, orgStateName, orgCityName, OrgWebsite, orgEmail, orgFax
 	const [ completeData, setCompleteData ] = useState({});
 
+	useEffect(
+		() => {
+			validateAllFields();
+		},
+		[ orgName, orgStreetAddress, isZipError, orgStateName, orgCityName, OrgWebsite, websiteError, emailError ]
+	);
 	const validateAllFields = () => {
 		!isEmpty(orgName) &&
 			!isEmpty(orgStreetAddress) &&
@@ -168,6 +174,73 @@ const HomepageController = (props) => {
 
 	// Page Three Controls
 	const [ tags, setTags ] = useState('');
+	const [ userDataFetched, setUserDataFetched ] = useState(false);
+	const [ existingData, setExistingData ] = useState({});
+
+	useEffect(() => {
+		getUserData();
+	}, []);
+
+	useEffect(
+		() => {
+			if (userDataFetched) {
+				fillUpExistingData();
+			}
+		},
+		[ userDataFetched ]
+	);
+
+	const fillUpExistingData = () => {
+		if (!isEmpty(existingData)) {
+			setOrgName(existingData.org_name);
+			setOrgStreetAddress(existingData.org_street_address);
+			setZipCode(existingData.org_zip);
+			setOrgStateName(existingData.org_state);
+			setOrgCityName(existingData.org_city);
+			setOrgWebsite(existingData.org_site);
+			setOrgEmail(existingData.org_mail);
+			setOrgFax(existingData.org_fax);
+			// setPocName()
+			// setPocTitle()
+			// setPocEmail()
+			// setPocPhone()
+			// setOffTime()
+
+
+
+
+		}
+
+		return setIsLoading(false);
+	};
+
+
+	console.log('offTime', offTime);
+	// console.log('orgName', orgName);
+
+	const getUserData = () => {
+		// ${process.env.REACT_APP_API_BASE_URL}/org/getOrg/emailId
+
+		axios({
+			headers : {
+				'Access-Control-Allow-Origin' : '*',
+				'Content-Type'                : 'application/json'
+			},
+			method  : 'GET',
+			mode    : 'cors',
+			data    : completeData,
+			url     : `${process.env.REACT_APP_API_BASE_URL}/org/getOrg/${userEmailId}`
+		}).then(
+			(response) => {
+				console.log('responsexxx', response.data, userDataFetched);
+				setExistingData(response.data);
+				setUserDataFetched(true);
+			},
+			(err) => {
+				console.log('err', err);
+			}
+		);
+	};
 
 	// Post Data
 	const validateAndPostData = () => {
@@ -179,7 +252,7 @@ const HomepageController = (props) => {
 			method  : 'POST',
 			mode    : 'cors',
 			data    : completeData,
-			url     : `${process.env.REACT_APP_API_BASE_URL}/org/addOrgData/`
+			url     : `${process.env.REACT_APP_API_BASE_URL}/org/addOrgData`
 		}).then(
 			(response) => {
 				console.log('response', response);
@@ -320,6 +393,7 @@ const HomepageController = (props) => {
 					offTime={offTime}
 					setOffTime={setOffTime}
 					continueHandler={continueHandler}
+					existingData={existingData}
 				/>
 			);
 		case 3:

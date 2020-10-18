@@ -62,6 +62,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<Container minWidth={'100px'}>
 						<input
+							checked={selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
@@ -122,6 +123,7 @@ const OrgFormTwo = ({
 	setPocPhone,
 	pocPhoneError,
 	validatePocPhone,
+	existingData,
 
 	checkboxOpions = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ],
 	checkboxHeader = 'Hours Of Operation',
@@ -131,12 +133,12 @@ const OrgFormTwo = ({
 
 	...props
 }) => {
-	console.log('Inside 2');
 	const [ selected, setSelected ] = useState([]);
 	const [ isOnileSelected, setIsOnileSelected ] = useState();
 	const [ timeSelectedStart, setTimeSelectedStart ] = useState();
 	const [ timeSelectedEnd, setTimeSelectedEnd ] = useState();
 
+	console.log('Inside 2', selected, existingData.off_days);
 	return (
 		<Container
 			width={'100vw'}
@@ -154,11 +156,10 @@ const OrgFormTwo = ({
 				<CheckBoxes
 					header={checkboxHeader}
 					names={checkboxOpions}
-					selected={selected}
+					selected={!isEmpty(selected) ? selected : existingData.off_days}
 					setSelected={setSelected}
 					props={props}
 				/>
-				{console.log('Inside 2x')}
 				<Spacing space={'50px'} mobileSpace={'50px'} />
 				<FlexContainer
 					mobileWidth={'266px'}
@@ -169,7 +170,12 @@ const OrgFormTwo = ({
 					<Container width={'210px'} mobileWidth={'120px'}>
 						<FormDropdown
 							title={'Start Time'}
-							value={timeSelectedStart}
+							value={
+								timeSelectedStart || {
+									value : get(existingData.off_time, 'start'),
+									label : get(existingData.off_time, 'start')
+								}
+							}
 							options={time}
 							onChange={setTimeSelectedStart}
 							required={true}
@@ -178,7 +184,12 @@ const OrgFormTwo = ({
 					<Container width={'210px'} mobileWidth={'120px'}>
 						<FormDropdown
 							title={'End Time'}
-							value={timeSelectedEnd}
+							value={
+								timeSelectedEnd || {
+									value : get(existingData.off_time, 'end'),
+									label : get(existingData.off_time, 'end')
+								}
+							}
 							options={time}
 							onChange={setTimeSelectedEnd}
 							required={true}
