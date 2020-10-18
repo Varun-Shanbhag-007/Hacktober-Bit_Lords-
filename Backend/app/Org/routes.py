@@ -30,7 +30,7 @@ def getOrg(email):
     org = Org(data)
     val = org.find
     if val is None:
-        abort(404)
+        return make_response(jsonify({"status":"new_user"}), 200)
     else:
         return make_response(dumps(val), 200)
 
