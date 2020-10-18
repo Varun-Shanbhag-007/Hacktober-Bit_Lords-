@@ -39,6 +39,9 @@ const ButtonContainerX = styled.div`
 const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 	const selectedHandler = (val) => {
 		let values = [];
+		if (isEmpty(selected)) {
+			selected = [];
+		}
 		if (selected.includes(val)) {
 			values = selected.filter((curr, idx) => curr !== val);
 		}
@@ -62,7 +65,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<Container minWidth={'100px'}>
 						<input
-							checked={selected.includes(val)}
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}

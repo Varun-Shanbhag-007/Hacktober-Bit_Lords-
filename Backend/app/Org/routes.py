@@ -30,7 +30,7 @@ def getOrg(email):
     org = Org(data)
     val = org.find
     if val is None:
-        abort(404)
+        return make_response(jsonify({"status":"new_user"}), 200)
     else:
         return make_response(dumps(val), 200)
 
@@ -45,7 +45,7 @@ def getNearbyOrgs():
     stringFilters = ""
     if "program_category" in request.json:
          stringFilters+=",".join(request.json["program_category"])
-    if "custom_string" in request.json:
+    if "custom_string" in request.json and len(request.json["custom_string"]) > 0:
         stringFilters+="," + request.json["custom_string"]
 
     _, lemma = processData.separateToLemma(stringFilters, orgSearch)
@@ -61,5 +61,5 @@ def getNearbyOrgs():
         if dist <=100:
             i["distance"] = dist
             result.append(i)
-
-    return make_response({"data": processData.JSONEncoder().encode(result)}, 200)
+    result = [eval(processData.JSONEncoder().encode(i)) for i in result]
+    return make_response(jsonify({"data": result}), 200)
