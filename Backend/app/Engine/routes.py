@@ -1,5 +1,6 @@
 
 from app.Engine import bp
+from flask_cors import cross_origin
 import zipcodes
 
 __IS_VALID__ = "isvalid"
@@ -7,6 +8,7 @@ __CITY__ = "city"
 __STATE__ = "state"
 
 @bp.route('/zip/<zipcode_str>', methods = ['GET'])
+@cross_origin()
 def get_zipcode_info(zipcode_str):
 
     """

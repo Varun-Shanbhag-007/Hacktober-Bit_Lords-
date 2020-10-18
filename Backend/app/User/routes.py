@@ -1,8 +1,10 @@
 from app.User import bp
 from Models.User import User
 from flask import jsonify, make_response, abort
+from flask_cors import cross_origin
 
 @bp.route('/login/<email>', methods = ['GET'])
+@cross_origin()
 def login(email):
     data = { "email": email }
     user = User(data)

@@ -5,8 +5,10 @@ from bson.json_util import dumps
 import app.Engine.OrgSearch.processData as processData
 from Models.nOrg import nOrg
 from app.Engine.OrgSearch.OrganisationSearch import OrganisationSearch
+from flask_cors import CORS, cross_origin
 
 @bp.route('/org/addOrgData', methods = ['POST'])
+@cross_origin()
 def saveData():
     val = request.get_json(force=True)
     data = {"org_key": val["org_key"]}
@@ -22,6 +24,7 @@ def saveData():
 
 
 @bp.route('/org/getOrg/<email>')
+@cross_origin()
 def getOrg(email):
     data = {"org_key": email }
     org = Org(data)
@@ -32,6 +35,7 @@ def getOrg(email):
         return make_response(dumps(val), 200)
 
 @bp.route('/org/getNearbyOrg', methods=['POST'])
+@cross_origin()
 def getNearbyOrgs():
     if not request.json or "org_zip" not in request.json:
         abort(404)
