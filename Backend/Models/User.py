@@ -7,3 +7,7 @@ class User(MainModel):
     @property
     def find(self):
         return self.db_collection.find_one({"email": self.email})
+
+    @property
+    def update(self):
+        return self.db_collection.update_one({"email": self.email} , {"$set":{"userType":"A"}})

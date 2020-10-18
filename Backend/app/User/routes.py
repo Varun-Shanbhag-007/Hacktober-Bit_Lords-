@@ -13,3 +13,15 @@ def login(email):
         abort(404)
     else:
         return make_response(jsonify({"user_type":val['userType']}), 200)
+
+@bp.route('/makeadmin/<email>', methods = ['GET'])
+@cross_origin()
+def makeadmin(email):
+    data = { "email": email }
+    user = User(data)
+    val = user.find
+    if val is None:
+        abort(404)
+    else:
+        user.update
+        return make_response(jsonify({"status":"success"}), 200)
