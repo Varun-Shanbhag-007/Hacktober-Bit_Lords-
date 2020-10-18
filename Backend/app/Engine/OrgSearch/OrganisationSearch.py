@@ -6,9 +6,8 @@ from nltk.corpus import stopwords
 
 class OrganisationSearch():
 
-    stop_words = set(stopwords.words("English"))
+    stop_words = set(stopwords.words("english"))
     lemmatizer = WordNetLemmatizer()
-
     RAW_MATCH_WEIGHT = 0.5
 
     def __init__(self, data=None):
@@ -41,7 +40,9 @@ class OrganisationSearch():
 
     @staticmethod
     def wup_similarity(word1, word2):
-        pass
+        syn1 = wordnet.synsets(word1)[0] 
+        syn2 = wordnet.synsets(word2)[0]
+        return syn1.wup_similarity(syn2)
 
     @staticmethod
     def is_same(word1, word2):
