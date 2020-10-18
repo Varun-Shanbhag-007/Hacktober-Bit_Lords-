@@ -29,7 +29,7 @@ def push(org_key):
     :return:
     """
     RECIPIENT = org_key
-    SUBJECT = "[URGENT] Update your info"
+    SUBJECT = "[URGENT] Update organization info"
     print(RECIPIENT)
 
     with open("Utility/auth.json", "r") as file:
@@ -42,11 +42,10 @@ def push(org_key):
         <head></head>
         <body>
           <h1>Gentle reminder</h1>
-          <p>It's been 6 months since your organization has updated the information.</p>
-          <p>This email was sent with
-            <a href='https://aws.amazon.com/ses/'>Amazon SES</a> using the
-            <a href='https://aws.amazon.com/sdk-for-python/'>
-              AWS SDK for Python (Boto)</a>.</p>
+          <p style="font-size:19px">It's been 6 months since your organization has updated the information we have on record. In order to ensure integrity of your information
+        we need to perform verification.</p>
+          <p style="font-size:19px">In case if you no longer require our service, please contact us.</p>
+          <p>This email was sent on behalf of IJF (Illinois Joining Forces) via Bitlords.</p>
         </body>
         </html>"""
 
