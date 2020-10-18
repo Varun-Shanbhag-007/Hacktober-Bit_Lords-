@@ -53,7 +53,10 @@ const HomepageController = (props) => {
 
 	useEffect(
 		() => {
-			redirected && getUserData();
+			if (redirected) {
+				getUserData();
+				setIsLoading(false);
+			}
 		},
 		[ redirected ]
 	);
@@ -387,7 +390,7 @@ const HomepageController = (props) => {
 		);
 	}
 	if (showAdminPage) {
-		return <MakeAdminPage setshowAdminPage={setshowAdminPage} updateUserType={updateUserType} props={props} />;
+		return <MakeAdminPage setshowAdminPage={setshowAdminPage} updateUserType={updateUserType} setIsLoading={setIsLoading} props={props} />;
 	}
 	else {
 		switch (showPage) {
