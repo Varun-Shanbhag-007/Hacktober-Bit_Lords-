@@ -55,7 +55,7 @@ const HomepageController = (props) => {
 		}
 		else if (value == 'check' && zipCode.length !== 5) {
 			setIsZipError(true);
-			setZipErrorMessage('Please Enter a Valid 6 digit Zip.');
+			setZipErrorMessage('Please Enter a Valid 5 digit Zip.');
 		}
 		else {
 			setIsZipError(false);

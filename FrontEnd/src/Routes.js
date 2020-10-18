@@ -4,6 +4,7 @@ import Login from './components/Login/Login';
 import Main from './components/screens/Main/Main';
 import LoginWithEmail from './components/screens/LoginWithEmail';
 import Homepage from './components/screens/Homepage';
+import HelpVeterans from './components/screens/HelpVeterans';
 
 function Routes (props) {
 	return (
@@ -13,6 +14,7 @@ function Routes (props) {
 				<Route path='/main' render={(props) => <Main {...props} />} />
 				<Route path='/loginWithEmail' render={(props) => <LoginWithEmail {...props} />} />
 				<Route path='/homepage' render={(props) => <Homepage {...props} />} />
+				<Route path='/helpVeterans' render={(props) => <HelpVeterans {...props} />} />
 			</Switch>
 		</BrowserRouter>
 	);
