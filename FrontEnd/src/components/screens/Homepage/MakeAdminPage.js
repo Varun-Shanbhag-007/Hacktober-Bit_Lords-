@@ -36,8 +36,12 @@ const ButtonContainerX = styled.div`
 	}
 `;
 
-const MakeAdminPage = ({ setshowAdminPage, updateUserType, props }) => {
+const MakeAdminPage = ({ setshowAdminPage, updateUserType, setIsLoading, props }) => {
 	const [ val, setVal ] = useState('');
+
+	useEffect(() => {
+		setIsLoading(false);
+	}, []);
 
 	const makeAdmin = () => {
 		updateUserType(val);
