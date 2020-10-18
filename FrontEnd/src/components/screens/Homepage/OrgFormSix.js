@@ -38,7 +38,6 @@ const ButtonContainerX = styled.div`
 
 const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 	const selectedHandler = (val) => {
-		console.log('val', val);
 		let values = [];
 		if (selected.includes(val)) {
 			values = selected.filter((curr, idx) => curr !== val);
@@ -64,6 +63,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<FlexContainer minWidth={'100px'} justifyContent='center' alignItems='center' key={idx}>
 						<input
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
@@ -97,7 +97,7 @@ const weeks = [
 const OrgFormSix = ({
 	tags,
 	setTags,
-
+	existingData,
 	isLoading,
 	validateAllFieldsPageThree,
 	isAllFilledPageThree,
@@ -172,13 +172,23 @@ const OrgFormSix = ({
 		return true;
 	};
 
-	// console.log(
-	// 	'allSelected',
-	// 	requireAdditionalFamily.label,
-	// 	isSubscribed.label,
-	// 	{ days: daysSelected.value || '', weeks: weeksSelected.value || '' },
-	// 	participations
-	// );
+	useEffect(
+		() => {
+			if (!isEmpty(existingData)) {
+				setIsSubscribed({
+					value : 'isSubscribed',
+					label : existingData.is_subscribed
+				});
+
+				setRequireAdditionalFamily({
+					value : 'requireAdditionalFamily',
+					label : existingData.is_additional_family_allowed
+				});
+				setParticipations(existingData.particaption_list);
+			}
+		},
+		[ existingData ]
+	);
 
 	useEffect(() => {
 		if (
@@ -210,7 +220,16 @@ const OrgFormSix = ({
 					alignItems='space-between'>
 					<FormDropdown
 						title={'Are additional family or household members eligible for this program?'}
-						value={requireAdditionalFamily}
+						value={
+							!isEmpty(requireAdditionalFamily) ? (
+								requireAdditionalFamily
+							) : (
+								{
+									value : 'requireAdditionalFamily',
+									label : existingData.is_additional_family_allowed
+								}
+							)
+						}
 						options={[
 							{ value: 'requireAdditionalFamily', label: 'Yes' },
 							{ value: 'requireAdditionalFamily', label: 'No' }
@@ -229,7 +248,16 @@ const OrgFormSix = ({
 					alignItems='space-between'>
 					<FormDropdown
 						title={'I would like to receive more information on partnering with Illinois Joining Forces.'}
-						value={isSubscribed}
+						value={
+							!isEmpty(isSubscribed) ? (
+								isSubscribed
+							) : (
+								{
+									value : 'isSubscribed',
+									label : existingData.is_subscribed
+								}
+							)
+						}
 						options={[ { value: 'isSubscribed', label: 'Yes' }, { value: 'isSubscribed', label: 'No' } ]}
 						onChange={setIsSubscribed}
 						required={true}
@@ -247,7 +275,7 @@ const OrgFormSix = ({
 							title={
 								'Do you participate in an IJF Veteran Support Community or other local collaborative? (If yes, please list name and location.)'
 							}
-							value={participations}
+							value={participations || existingData.particaption_list}
 							required={true}
 						/>
 					</StyledForm>
@@ -286,7 +314,7 @@ const OrgFormSix = ({
 					</Container>
 				</FlexContainer>
 
-				{(isAllFilledPageThree || isAllSelected) && (
+				{(!isEmpty(existingData) || (isAllFilledPageThree || isAllSelected)) && (
 					<ButtonContainerX>
 						<Button active onClick={pageSelectionHandler} text={'Continue'} />
 					</ButtonContainerX>

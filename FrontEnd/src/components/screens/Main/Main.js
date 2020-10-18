@@ -49,6 +49,7 @@ const Main = (props) => {
 				settypeFetched(true);
 				setEserEmail(user.email);
 				Cookie.set('userEmail', user.email);
+				Cookie.set('userType', data.user_type);
 			},
 			(err) => {
 				console.log('err', err);

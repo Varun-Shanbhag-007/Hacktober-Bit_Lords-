@@ -38,8 +38,10 @@ const ButtonContainerX = styled.div`
 
 const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 	const selectedHandler = (val) => {
-		console.log('val', val);
 		let values = [];
+		if (isEmpty(selected)) {
+			selected = [];
+		}
 		if (selected.includes(val)) {
 			values = selected.filter((curr, idx) => curr !== val);
 		}
@@ -64,6 +66,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<FlexContainer minWidth={'100px'} justifyContent='center' alignItems='center' key={idx}>
 						<input
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
@@ -77,25 +80,6 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 		</Container>
 	);
 };
-
-// const Tag = ({ pocName, isAllFilledPageThree, setPocName, validateAllFieldsPageThree, title = 'placeholder' }) => {
-// 	return (
-// 		<Container key={title}>
-// 			<Spacing space={'50px'} mobileSpace={'50px'} />
-// 			<StyledForm>
-// 				<FormInput
-// 					cancellable={!isEmpty(pocName)}
-// 					error={isAllFilledPageThree && isEmpty(pocName)}
-// 					onChange={setPocName}
-// 					title={title}
-// 					value={pocName}
-// 					handleBlur={validateAllFieldsPageThree}
-// 					required={true}
-// 				/>
-// 			</StyledForm>
-// 		</Container>
-// 	);
-// };
 
 const OrgFormThree = ({
 	tags,
@@ -155,7 +139,7 @@ const OrgFormThree = ({
 	],
 	isOnline = [ 'Yes', 'No' ],
 	isOnlineCheckboxHeader = 'Have Online Operation',
-
+	existingData,
 	...props
 }) => {
 	const [ pageNum, setpageNum ] = useState(1);
@@ -178,8 +162,8 @@ const OrgFormThree = ({
 			case 2:
 				continueHandler(3, {
 					...allSelected,
-					is_peer_support : isPeerSupported.label,
-					is_hotline      : isHotlineSupported.label,
+					is_peer_support : existingData.is_peer_support || (isPeerSupported && isPeerSupported.label),
+					is_hotline      : existingData.is_hotline || (isHotlineSupported && isHotlineSupported.label),
 					medical_therapy : [ ...columnTherapies, columnTherapiesX ],
 					medical_service : [ ...extraMed, extraMedX ]
 				});
@@ -195,8 +179,6 @@ const OrgFormThree = ({
 		}
 		return true;
 	};
-
-	console.log('allSelected', allSelected);
 
 	useEffect(() => {
 		if (pageNum === 1 && !isEmpty(selectedMilitary)) {
@@ -214,6 +196,19 @@ const OrgFormThree = ({
 		else setisAllSelected(false);
 	});
 
+	useEffect(
+		() => {
+			if (!isEmpty(existingData)) {
+				setSelectedMilitary(existingData.program_category);
+				setColumnTherapies(existingData.medical_therapy);
+				setExtraMed(existingData.medical_service);
+				setIsPeerSupported({ value: 'isPeerSupported', label: existingData.is_peer_support || 'No' });
+				setIsHotlineSupported({ value: 'isPeerSupported', label: existingData.is_hotline || 'No' });
+			}
+		},
+		[ existingData ]
+	);
+
 	return (
 		<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'180px'} paddingLeft={'10%'} paddingRight={'10%'}>
 			<FCAppBar {...props} />
@@ -221,16 +216,7 @@ const OrgFormThree = ({
 			<FlexContainer flexDirection='column' alignItems='center' marginTop={'0px'} width={'100%'}>
 				<LoadingAnimationPopup showPopup={isLoading} />
 
-				<HeaderOne
-					text={
-						<p>
-							Please indicate if your organization provides assistance in one or more of the following
-							categories
-						</p>
-					}
-					color={Colors.darkBlack}
-					bold
-				/>
+				<HeaderOne text={<p>Assistanece and Services offered</p>} color={Colors.darkBlack} bold />
 				{pageNum === 1 && (
 					<CheckBoxes
 						header={checkboxHeader}
@@ -353,7 +339,7 @@ const OrgFormThree = ({
 					</Container>
 				)}
 
-				{(isAllFilledPageThree || isAllSelected) && (
+				{(!isEmpty(existingData) || isAllFilledPageThree || isAllSelected) && (
 					<ButtonContainerX>
 						<Button active onClick={pageSelectionHandler} text={'Continue'} />
 					</ButtonContainerX>

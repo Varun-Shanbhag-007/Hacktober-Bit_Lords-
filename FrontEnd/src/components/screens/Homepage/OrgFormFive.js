@@ -64,6 +64,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<FlexContainer minWidth={'100px'} justifyContent='center' alignItems='center' key={idx}>
 						<input
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
@@ -110,7 +111,7 @@ const OrgFormFive = ({
 	],
 	serveOptions = [ 'Honorable', 'General', 'Other Than Honorable', 'Bad Conduct', 'Dishonorable' ],
 	checkboxHeader = 'What military discharge status do you serve? (Check all that apply) *',
-
+	existingData,
 	checkboxOpionsServiceEras = [ 'WWII', 'Korea', 'Vietnam', 'Gulf War', 'Post 9/11', 'Peacetime' ],
 	specializedMedServices = [
 		'Physical Rehab',
@@ -153,8 +154,6 @@ const OrgFormFive = ({
 		return true;
 	};
 
-	// console.log('allSelected', requireDD.label, requireDisability, requireGeo, emergencyAssistance);
-
 	useEffect(() => {
 		if (
 			!isEmpty(requireDD) &&
@@ -166,6 +165,24 @@ const OrgFormFive = ({
 		}
 		else setisAllSelected(false);
 	});
+
+	useEffect(
+		() => {
+			if (!isEmpty(existingData)) {
+				setRequireDD({
+					value : 'requireDD',
+					label : existingData.is_dd_214
+				});
+				setRequireDisability({
+					value : 'requireDisability',
+					label : existingData.fin_assistance_limit
+				});
+				setRequireGeo(existingData.program_req_geo_area);
+				setEmergencyAssistance(existingData.fin_assistance_limit);
+			}
+		},
+		[ existingData ]
+	);
 
 	return (
 		<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'180px'} paddingLeft={'10%'} paddingRight={'10%'}>
@@ -201,7 +218,7 @@ const OrgFormFive = ({
 					alignItems='space-between'>
 					<FormDropdown
 						title={'Is disability a requirement to be part of this program?'}
-						value={requireDisability}
+						value={!isEmpty(requireDisability) && requireDisability}
 						options={[
 							{ value: 'requireDisability', label: 'Yes' },
 							{ value: 'requireDisability', label: 'No' }
@@ -243,7 +260,7 @@ const OrgFormFive = ({
 					</StyledForm>
 				</FlexContainer>
 
-				{(isAllFilledPageThree || isAllSelected) && (
+				{(!isEmpty(existingData) || (isAllFilledPageThree || isAllSelected)) && (
 					<ButtonContainerX>
 						<Button active onClick={pageSelectionHandler} text={'Continue'} />
 					</ButtonContainerX>

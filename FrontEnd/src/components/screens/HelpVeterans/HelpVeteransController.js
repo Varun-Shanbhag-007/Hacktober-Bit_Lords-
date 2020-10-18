@@ -9,8 +9,8 @@ import HelpVeteransScreen from './HelpVeteransScreen';
 
 const HelpVeteransController = (props) => {
 	// Page One Controls
-	const [ isLoading, setIsLoading ] = useState(!true);
-	const [ zipcode, setZipcode ] = useState('60616');
+	const [ isLoading, setIsLoading ] = useState(false);
+	const [ zipcode, setZipcode ] = useState();
 	const [ isZipError, setIsZipError ] = useState(false);
 	const [ zipErrorMessage, setZipErrorMessage ] = useState('');
 	const [ selectedcategory, setSelectedcategory ] = useState();
@@ -21,6 +21,7 @@ const HelpVeteransController = (props) => {
 	const [ allData, setAllData ] = useState([]);
 	const [ allDataFetched, setallDataFetched ] = useState(false);
 	const [ filters, setFilters ] = useState([]);
+	const [ ApiCall, setApiCall ] = useState(true);
 
 	const validateZipCode = (task, zip) => {
 		if (isEmpty(zip)) {
@@ -49,7 +50,7 @@ const HelpVeteransController = (props) => {
 			},
 			method  : 'POST',
 			mode    : 'cors',
-			data    : { org_zip: '60616', custom_string: '', program_category: [] },
+			data    : { org_zip: '60616', custom_string: searchKey, program_category: selectedcategory },
 			url     : `${process.env.REACT_APP_API_BASE_URL}/org/getNearbyOrg`
 		}).then(
 			(response) => {
@@ -57,6 +58,7 @@ const HelpVeteransController = (props) => {
 				setOriginalData(jsonObj);
 				ProcessData();
 				setallDataFetched(true);
+				setApiCall(false);
 			},
 			(err) => {
 				console.log('err', err);
@@ -65,12 +67,7 @@ const HelpVeteransController = (props) => {
 	};
 
 	const ProcessData = () => {
-		console.log('Inside ProcessData');
 	};
-
-	useEffect(() => {
-		getOrgData();
-	}, []);
 
 	useEffect(
 		() => {
@@ -80,34 +77,82 @@ const HelpVeteransController = (props) => {
 			else {
 				ProcessData();
 			}
+			// setIsLoading(false);
 		},
 		[ allDataFetched, originalData, filters ]
 	);
 
 	const FilterHandler = (values) => {
-		setFilters(values);
+		setFilters({ ...filters, ...values });
 	};
 
 	const validateSearch = () => {
 		// setIsLoading(true);
 	};
 
-	const validateSearchQuery = () => {
-		setIsLoading(true);
-
+	const filterAllData = () => {
+		let data = originalData;
+		let newData = [];
 		Object.keys(filters).forEach((filter, idx) => {
 			switch (filter) {
 				case 'radiusFilter':
-					const data = originalData.filter((each, idx) => {
-						return each.distance <= filters.radiusFilter;
-					});
-					setAllData(data);
-					console.log('I  Am Here!', filters.radiusFilter, data);
-					setIsLoading(false);
+					if (!isEmpty(data)) {
+						newData = data.filter((each, idx) => {
+							return each.distance <= filters.radiusFilter;
+						});
+					}
+
+					break;
+
+				case 'addFamilyFilter':
+					if (!isEmpty(originalData)) {
+						newData = data.filter((each, idx) => {
+							return each.is_additional_family_allowed == 'Yes';
+						});
+					}
+
+					break;
+
+				case 'disabilityfilter':
+					if (!isEmpty(originalData)) {
+						newData = data.filter((each, idx) => {
+							return each.is_disability_req == 'Yes';
+						});
+					}
+
+					break;
+
+				case 'militaryFilter':
+					if (!isEmpty(originalData)) {
+						newData = data.filter((each, idx) => {
+							return each.military_status.includes(filters.militaryFilter);
+						});
+					}
+
 					break;
 			}
+			setAllData(newData);
 		});
+
+		// setIsLoading(false);
 	};
+
+	const validateSearchQuery = (value) => {
+
+		setIsLoading(true);
+		if (value) {
+			getOrgData();
+		}
+		filterAllData();
+		setIsLoading(false);
+	};
+
+	useEffect(
+		() => {
+			setApiCall(true);
+		},
+		[ zipcode, searchKey, selectedcategory ]
+	);
 
 	// Screen Returns
 	return (
@@ -127,8 +172,11 @@ const HelpVeteransController = (props) => {
 			allData={allData}
 			allDataFetched={allDataFetched}
 			filters={filters}
+			setFilters={setFilters}
 			FilterHandler={FilterHandler}
 			validateSearch={validateSearch}
+			setApiCall={setApiCall}
+			ApiCall={ApiCall}
 		/>
 	);
 };

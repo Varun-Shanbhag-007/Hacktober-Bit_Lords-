@@ -22,8 +22,8 @@ const Card = styled(FlexContainer)`
 `;
 
 const CardTile = ({ options, ...props }) => {
-	const onCickHandler = (route) => {
-		props.history.push(route);
+	const onCickHandler = (route, val) => {
+		props.history.push(route, { val: val });
 	};
 	return (
 		<FlexContainer flexDirection={'row'} justifyContent='center' alignItems='center' alignSelf={'center'} pointer>
@@ -31,13 +31,17 @@ const CardTile = ({ options, ...props }) => {
 				return (
 					<Card
 						key={item.name + idx}
-						style={{ cursor: 'pointer' }}
+						style={{
+							cursor     : 'pointer',
+							// background : 'linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%)'
+							background : 'linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%)'
+						}}
 						width={'300px'}
 						height={'200px'}
-						backgroundColor={Colors.lightGgreen}
+						backgroundColor={'#f0f0f0'}
 						borderRadius={'10px'}
 						margin={'25px'}
-						onClick={() => onCickHandler(item.goTo)}
+						onClick={() => onCickHandler(item.goTo, item.val)}
 						options={options}
 						pointer>
 						<Note text={item.name} bold={700} pointer />
@@ -52,16 +56,21 @@ const MainRouterPage = ({ userType, userEmail, ...props }) => {
 	let options = [];
 	if (userType == 'SU') {
 		options = [
-			{ name: 'Help Veterans', goTo: '/helpVeterans' },
-			{ name: 'Edit Record', goTo: '/main' },
-			{ name: 'Add Admin', goTo: '/main' }
+			{ name: 'Help Veterans', goTo: '/helpVeterans', val: null },
+			{ name: 'Edit Record', goTo: '/homepage', val: 'editRecords' },
+			{ name: 'Add Admin', goTo: '/homepage', val: 'makeAdmin' }
 		];
 	}
 	else if (userType == 'N') {
 		options = [ { name: 'Add/Edit Record', goTo: '/homePage' } ];
 	}
+	else if (userType == 'A') {
+		options = [
+			{ name: 'Help Veterans', goTo: '/helpVeterans', val: null },
+			{ name: 'Edit Record', goTo: '/homepage', val: 'editRecords' }
+		];
+	}
 
-	console.log('userEmail', userType, userEmail);
 
 	return (
 		<FlexContainer

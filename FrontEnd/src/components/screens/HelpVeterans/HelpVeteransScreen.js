@@ -79,18 +79,19 @@ const ResultCard = ({ val, zipcode }) => {
 	return (
 		<FlexContainer flexDirection={'column'} width={'100%'}>
 			<Container
-				width={'80%'}
+				width={'70%'}
 				border={'2px solid #E8E8E8'}
-				backgroundColor={'#f9f9f9'}
+				backgroundColor={'#ffffff'}
 				boxShadow={'5px #292929'}
 				marginBottom={'50px'}
-				marginLeft={'10%'}
-				borderRadius={'2px'}
+				marginLeft={'15%'}
+				borderRadius={'1px'}
 				padding={'20px'}>
 				<FlexContainer flexDirection={'column'}>
-					<Container width={'100%'} paddingTop={'0px'} paddingBottom={'20px'}>
+					<Container width={'100%'} paddingTop={'0px'} paddingBottom={'0px'} margin='0px'>
 						<FlexContainer flexDirection='row' justifyContent={'center'} alignItems={'center'}>
-							<HeaderThree text={<p>{val.org_name}</p>} bold={700} color={Colors.darkGreen} />
+							<HeaderThree text={<p>{val.org_name}</p>} bold={700} color={'#4e78f7'} />
+
 							<Container width='20px' height='20px' />
 							<Note
 								text={<p>{`${val.distance} Miles from ${zipcode}`}</p>}
@@ -98,15 +99,19 @@ const ResultCard = ({ val, zipcode }) => {
 								bold={700}
 							/>
 						</FlexContainer>
+
 						<Container width={'100%'}>
 							<Note
 								bold
 								text={
-									<p>{`${val.org_site} | ${val.org_ph_no} | ${val.org_street_address}, ${val.org_state}, ${val.org_city}, ${val.org_zip}`}</p>
+									<p>{`${val.org_site == 'nan'
+										? 'No Website'
+										: val.org_site} | ${val.org_ph_no} | ${val.org_street_address}, ${val.org_state}, ${val.org_city}, ${val.org_zip}`}</p>
 								}
 								color={Colors.darkestGrey}
 							/>
 						</Container>
+						<hr style={{ border: '0.5px solid #cdcdcd' }} />
 					</Container>
 
 					<Container width={'100%'}>
@@ -125,7 +130,6 @@ const ResultCard = ({ val, zipcode }) => {
 									textAlign='start'>
 									<Container width={'100%'}>
 										<Note
-											bold
 											text={
 												<p>{`POC | Email ${val.poc_email} | Name: ${val.poc_name} | Title: ${val.poc_title} | Phone: ${val.poc_ph_no}`}</p>
 											}
@@ -134,7 +138,6 @@ const ResultCard = ({ val, zipcode }) => {
 
 									<Container width={'100%'}>
 										<Note
-											bold
 											text={
 												<p>{`MILITARY | Status ${val.military_status.map(
 													(val) => val
@@ -157,6 +160,8 @@ const ResultCard = ({ val, zipcode }) => {
 };
 
 const HelpVeteransScreen = ({
+	ApiCall,
+	setApiCall,
 	isLoading,
 	zipcode,
 	setZipcode,
@@ -188,8 +193,13 @@ const HelpVeteransScreen = ({
 		'Dental'
 	],
 	filters,
-	FilterHandler
+	FilterHandler,
+	setFilters
 }) => {
+	const [ filterMilitary, setfilterMilitary ] = useState('');
+	const [ disabilityfilter, setdisabilityfilter ] = useState('');
+	const [ addFamilyFilter, setaddFamilyFilter ] = useState('');
+	const [ isSubscribedFilter, setisSubscribedFilter ] = useState('');
 	const sliderMin = 1;
 	const sliderMax = 100;
 	const [ sliderValue, setSliderValue ] = useState((sliderMin + sliderMax) / 2);
@@ -200,24 +210,72 @@ const HelpVeteransScreen = ({
 		[ sliderMin, sliderMax ]
 	);
 
-	console.log('Inside', filters);
+	const removeFiltersHandler = () => {
+		setFilters([]);
+		setfilterMilitary('');
+		setdisabilityfilter('');
+		setaddFamilyFilter('');
+		setisSubscribedFilter('');
+	};
+
+	useEffect(
+		() => {
+			if (!isEmpty(filterMilitary)) {
+				setFilters({ ...filters, militaryFilter: filterMilitary.value });
+			}
+
+			if (!isEmpty(disabilityfilter)) {
+				setFilters({ ...filters, disabilityfilter: disabilityfilter.value });
+			}
+
+			if (!isEmpty(addFamilyFilter)) {
+				setFilters({ ...filters, addFamilyFilter: addFamilyFilter.value });
+			}
+
+			if (!isEmpty(isSubscribedFilter)) {
+				setFilters({ ...filters, isSubscribedFilter: isSubscribedFilter.value });
+			}
+		},
+		[ filterMilitary, disabilityfilter, addFamilyFilter, isSubscribedFilter ]
+	);
+
+	const getText = () => {
+		if (isEmpty(zipcode)) {
+			return 'Enter A zipcode to iniate search.';
+		}
+		else if (zipcode.length === 5 && isEmpty(searchKey) && isEmpty(selectedcategory)) {
+			return 'Enter a Service name/ Select a category';
+		}
+		else {
+			return 'Apply filters for more accurate results.';
+		}
+	};
 
 	return (
-		<Container paddingTop={'70px'}>
+		<Container paddingTop={'60px'}>
 			<FCAppBar />
 			<FlexContainer
 				maxWidth={'100vw'}
-				height={'90vh'}
+				height={'91vh'}
 				alignItems={'space-between'}
 				justify-conent={'space-between'}>
-				<LoadingAnimationPopup showPopup={isLoading || !allDataFetched} />
+				<LoadingAnimationPopup showPopup={isLoading} />
 				<Container
 					width={'29%'}
-					backgroundColor={Colors.lightGgreen}
+					// backgroundColor={Colors.lightGgreen}
 					height={'102%'}
 					marginLeft={'1%'}
-					style={{ overflow: 'scroll' }}>
-					<HeaderTwo text={<p>Search Here</p>} bold />
+					style={{
+						overflow : 'scroll'
+						// backgroundColor : '#b8c6db',
+						// backgroundImage : 'linear-gradient(315deg, #b8c6db 0%, #f5f7fa 74%)'
+					}}>
+					<HeaderTwo
+						text={<p>Search Here</p>}
+						bold
+						color={'#4e78f7'}
+						style={{ fontSize: '20px', fontWeight: '650' }}
+					/>
 					<FlexContainer
 						mobileWidth={'88%'}
 						width={'88%'}
@@ -268,7 +326,7 @@ const HelpVeteransScreen = ({
 								<HeaderTwo text={<p>Additional Filters</p>} bold />
 								<FormDropdown
 									title={'Military Status ?'}
-									value={selectedcategory}
+									value={filterMilitary}
 									options={[
 										{ value: 'Active Duty', label: 'Active Duty' },
 										{ value: 'Guard/Reserve', label: 'Guard/Reserve' },
@@ -277,69 +335,70 @@ const HelpVeteransScreen = ({
 										{ value: 'Family & Children', label: 'Family & Children' },
 										{ value: 'Caregivers & Survivors', label: 'Caregivers & Survivors' }
 									]}
-									onChange={setSelectedcategory}
+									onChange={setfilterMilitary}
 									handleBlur={validateSearch}
 								/>
 
 								<FormDropdown
 									title={'Disability required ?'}
-									value={selectedcategory}
+									value={disabilityfilter}
 									options={[ { value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' } ]}
-									onChange={setSelectedcategory}
+									onChange={setdisabilityfilter}
 									handleBlur={validateSearch}
 								/>
 
 								<FormDropdown
 									title={'Additional Family Allowed ?'}
-									value={selectedcategory}
+									value={addFamilyFilter}
 									options={[ { value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' } ]}
-									onChange={setSelectedcategory}
+									onChange={setaddFamilyFilter}
 									handleBlur={validateSearch}
 								/>
 
 								<FormDropdown
 									title={'Is Subscribed ?'}
-									value={selectedcategory}
+									value={isSubscribedFilter}
 									options={[ { value: 'Yes', label: 'Yes' }, { value: 'No', label: 'No' } ]}
-									onChange={setSelectedcategory}
+									onChange={setisSubscribedFilter}
 									handleBlur={validateSearch}
 								/>
-								{/* <Spacing space={'150px'} />
-								{'!isEmpty(filters)' && (
-									<ButtonContainerX>
-										<Button active onClick={validateSearchQuery} text={'Continue'} />
-									</ButtonContainerX>
-								)}
-								<Spacing space={'150px'} /> */}
 							</Fragment>
 						)}
-
-						{(!isZipError &&
-							!isEmpty(zipcode) &&
-							zipcode.length === 5 &&
-							(!isEmpty(selectedcategory) || !isEmpty(searchKey))) ||
-							(filters.length > 0 && (
-								<Fragment>
-									<Spacing space={'150px'} />
-									{'!isEmpty(filters)' && (
-										<ButtonContainerX>
-											<Button active onClick={validateSearchQuery} text={'Continue'} />
-										</ButtonContainerX>
-									)}
-									<Spacing space={'150px'} />
-								</Fragment>
-							))}
+						{((!isEmpty(filters) && !isEmpty(zipcode)) ||
+							(!isZipError &&
+								!isEmpty(zipcode) &&
+								zipcode.length === 5 &&
+								(!isEmpty(selectedcategory) || !isEmpty(searchKey)))) && (
+							<Fragment>
+								<div
+									style={{ color: 'red', cursor: 'pointer', marginTop: '20px' }}
+									onClick={removeFiltersHandler}>
+									Clear all Filters
+								</div>
+								<Spacing space={'150px'} />
+								{'!isEmpty(filters)' && (
+									<ButtonContainerX>
+										<Button active onClick={() => validateSearchQuery(ApiCall)} text={'Continue'} />
+									</ButtonContainerX>
+								)}
+								<Spacing space={'150px'} />
+							</Fragment>
+						)}
 					</FlexContainer>
 				</Container>
 
-				<Container width={'88%'} height={'102%'} style={{ overflow: 'scroll' }}>
+				<Container width={'88%'} height={'102%'} style={{ overflow: 'scroll' }} backgroundColor='#f8f9fa'>
 					<FlexContainer
 						flexDirection={'column'}
 						justifyContent='center'
 						alignItems='center'
 						width={'100%'}
 						height={'100px'}>
-						<HeaderTwo text={`Filter with Radius in : ${sliderValue} Miles`} bold={700} color={'#2eb62c'} />
+						<HeaderTwo
+							text={`Filter with Radius in : ${sliderValue} Miles`}
+							bold={700}
+							style={{ fontSize: '18px' }}
+						/>
 						<FlexContainer width='50%' height='20px'>
 							<RadiusSlider
 								min={sliderMin}
@@ -354,17 +413,24 @@ const HelpVeteransScreen = ({
 					<FlexContainer flexDirection={'column'} justifyContent='center' alignItems='center'>
 						{allData.length > 0 ? (
 							allData.map((val, key) => <ResultCard key={val._id} val={val} zipcode={zipcode} />)
+						) : allDataFetched ? (
+							<FlexContainer
+								flexDirection={'row'}
+								justifyContent={'center'}
+								alignItems='center'
+								style={{ fontSize: '30px', color: 'red' }}
+								marginTop={'25%'}>
+								<p>No Results found. Search Again.</p>
+							</FlexContainer>
 						) : (
-							allDataFetched && (
-								<FlexContainer
-									flexDirection={'row'}
-									justifyContent={'center'}
-									alignItems='center'
-									style={{ fontSize: '30px', color: 'red' }}
-									marginTop={'25%'}>
-									<p>No Results found. Search Again.</p>
-								</FlexContainer>
-							)
+							<FlexContainer
+								flexDirection={'row'}
+								justifyContent={'center'}
+								alignItems='center'
+								style={{ fontSize: '20px', fontStyle: 'bold', fontWeight: '600' }}
+								marginTop={'25%'}>
+								<p>{getText()}</p>
+							</FlexContainer>
 						)}
 					</FlexContainer>
 				</Container>

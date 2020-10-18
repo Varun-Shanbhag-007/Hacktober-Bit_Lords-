@@ -234,13 +234,13 @@ const selectStyles = {
 		border          : 'none',
 		margin          : '10px 0px 0px 0px',
 		hover           : 'none',
-		fontFamily      : 'Inter',
+		fontFamily      : 'Roboto',
 		borderColor     : Colors.lightGrey,
 		boxShadow       : 'none'
 	}),
 	dropdownIndicator  : (base) => ({
 		...base,
-		fontFamily : 'Inter',
+		fontFamily : 'Roboto',
 		border     : 'none'
 	}),
 	indicatorSeparator : (base) => ({
@@ -251,11 +251,11 @@ const selectStyles = {
 		...base,
 		padding     : 0,
 		paddingLeft : 2,
-		fontFamily  : 'Inter'
+		fontFamily  : 'Roboto'
 	}),
 	menu               : (base) => ({
 		...base,
-		fontFamily : 'Inter',
+		fontFamily : 'Roboto',
 		marginTop  : '20px',
 		zIndex     : '3'
 	})
@@ -373,7 +373,7 @@ const DateInput = ({
 						{icon}
 					</FlexContainer>
 					<StyledInput
-						style={{ fontSize: '16px', fontFamily: 'Inter' }}
+						style={{ fontSize: '16px', fontFamily: 'Roboto' }}
 						value={value}
 						onChange={(e) => onChange && onChange(e.target.value)}
 						type='date'

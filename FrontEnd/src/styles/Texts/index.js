@@ -132,7 +132,7 @@ const StyledNote = styled.div`
 `;
 
 const StyledFinePrint = styled.div`
-	font-family: Inter;
+	font-family: Roboto;
 	font-style: normal;
 	font-weight: normal;
 	font-size: 12px;

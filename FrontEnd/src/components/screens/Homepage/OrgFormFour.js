@@ -38,8 +38,10 @@ const ButtonContainerX = styled.div`
 
 const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 	const selectedHandler = (val) => {
-		console.log('val', val);
 		let values = [];
+		if (isEmpty(selected)) {
+			selected = [];
+		}
 		if (selected.includes(val)) {
 			values = selected.filter((curr, idx) => curr !== val);
 		}
@@ -64,6 +66,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<FlexContainer minWidth={'100px'} justifyContent='center' alignItems='center' key={idx}>
 						<input
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
@@ -110,7 +113,7 @@ const OrgFormFour = ({
 	],
 	serveOptions = [ 'Honorable', 'General', 'Other Than Honorable', 'Bad Conduct', 'Dishonorable' ],
 	checkboxHeader = 'What military discharge status do you serve? (Check all that apply) *',
-
+	existingData,
 	checkboxOpionsServiceEras = [ 'WWII', 'Korea', 'Vietnam', 'Gulf War', 'Post 9/11', 'Peacetime' ],
 	specializedMedServices = [
 		'Physical Rehab',
@@ -156,8 +159,6 @@ const OrgFormFour = ({
 		return true;
 	};
 
-	// console.log('allSelected', selectedMilitary, serviceEras, serveOptionss, isCombatService);
-
 	useEffect(() => {
 		if (
 			!isEmpty(selectedMilitary) &&
@@ -170,6 +171,19 @@ const OrgFormFour = ({
 		else setisAllSelected(false);
 	});
 
+	useEffect(
+		() => {
+			if (!isEmpty(existingData)) {
+				setServeOptionss(existingData.discharge_status);
+				setIsCombatService({ value: 'isCombatService', label: existingData.is_combat_service });
+				setServiceEras(existingData.serivce_era);
+			}
+		},
+		[ existingData ]
+	);
+
+	console.log('PAGE 4 :', selectedMilitary);
+
 	return (
 		<Container width={'100vw'} paddingTop={'70px'} paddingBottom={'180px'} paddingLeft={'10%'} paddingRight={'10%'}>
 			<FCAppBar {...props} />
@@ -181,7 +195,7 @@ const OrgFormFour = ({
 				<CheckBoxes
 					header={checkboxHeader}
 					names={checkboxOpions}
-					selected={selectedMilitary}
+					selected={!isEmpty(selectedMilitary) ? selectedMilitary : existingData.military_status}
 					setSelected={setSelectedMilitary}
 					props={props}
 				/>
@@ -190,7 +204,7 @@ const OrgFormFour = ({
 				<CheckBoxes
 					header={'What service eras are eligible for your program?*'}
 					names={checkboxOpionsServiceEras}
-					selected={serviceEras}
+					selected={!isEmpty(serviceEras) && serviceEras}
 					setSelected={setServiceEras}
 					props={props}
 				/>
@@ -199,7 +213,7 @@ const OrgFormFour = ({
 				<CheckBoxes
 					header={'What military discharge status do you serve? (Check all that apply)*'}
 					names={serveOptions}
-					selected={serveOptionss}
+					selected={!isEmpty(serveOptionss) && serveOptionss}
 					setSelected={setServeOptionss}
 					props={props}
 				/>
@@ -223,7 +237,7 @@ const OrgFormFour = ({
 					/>
 				</FlexContainer>
 
-				{(isAllFilledPageThree || isAllSelected) && (
+				{(!isEmpty(existingData) || (isAllFilledPageThree || isAllSelected)) && (
 					<ButtonContainerX>
 						<Button active onClick={pageSelectionHandler} text={'Continue'} />
 					</ButtonContainerX>

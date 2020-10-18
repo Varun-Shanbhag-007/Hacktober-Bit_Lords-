@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
 		maxHeight       : theme.spacing(5),
 		minWidth        : theme.spacing(20),
 		marginLeft      : theme.spacing(20),
-		
-		"&:hover":{
-			backgroundColor: '#C0D8C5',
-			color: '#000'
+
+		'&:hover'       : {
+			backgroundColor : '#C0D8C5',
+			color           : '#000'
 		}
 	},
 	heading            : {
@@ -95,10 +95,10 @@ function Login (props) {
 						<Button variant='contained' className={classes.loginButton} onClick={() => loginWithRedirect()}>
 							Login
 						</Button>
-						<br />
+						{/* <br />
 						<Button variant='contained' className={classes.loginButton} onClick={withEmail}>
 							Login with email
-						</Button>
+						</Button> */}
 					</div>
 				</FlexContainer>
 			</Container>

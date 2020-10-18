@@ -94,13 +94,21 @@ function FCAppBar (props) {
 			<ElevationScroll {...props}>
 				<AppBar className={classes.appBar}>
 					<Toolbar>
-						<IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
-							<Avatar
-								alt='fcLogo'
-								src={process.env.PUBLIC_URL + '/fcLogo.png'}
-								className={classes.large}
-							/>
-						</IconButton>
+						<a href='./main'>
+							<IconButton
+								// edge='start'
+								className={classes.menuButton}
+								color='inherit'
+								aria-label='menu'
+								size='medium'>
+								<Avatar
+									alt='fcLogo'
+									src={process.env.PUBLIC_URL + '/fcLogo.png'}
+									className={classes.large}
+									style={{ width: '100px'}}
+								/>
+							</IconButton>
+						</a>
 						{/* <Typography variant="h6">FaangCracker</Typography> */}
 						{loggedInComponent}
 					</Toolbar>

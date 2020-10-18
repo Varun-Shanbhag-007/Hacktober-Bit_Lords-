@@ -4,7 +4,7 @@ import { FlexContainer, Container, Spacing } from '../../../styles/StylingCompon
 import { Button } from '../../../styles/Button';
 import { get, isEmpty } from 'lodash';
 import { FormInput, FormPasswordInput, FormDropdown } from '../../../styles/Forms';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import FCAppBar from '../../FCAppBar/FCAppBar';
 import LoadingAnimationPopup from '../../Loader/loader';
@@ -128,7 +128,7 @@ const OrgFormTwo = ({
 	validatePocPhone,
 	existingData,
 
-	checkboxOpions = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ],
+	checkboxOpions = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ],
 	checkboxHeader = 'Hours Of Operation',
 
 	isOnline = [ 'Yes', 'No' ],
@@ -141,7 +141,14 @@ const OrgFormTwo = ({
 	const [ timeSelectedStart, setTimeSelectedStart ] = useState();
 	const [ timeSelectedEnd, setTimeSelectedEnd ] = useState();
 
-	console.log('Inside 2', selected, existingData.off_days);
+	useEffect(
+		() => {
+			if (!isEmpty(existingData)) {
+				setSelected(existingData.off_days);
+			}
+		},
+		[ existingData ]
+	);
 	return (
 		<Container
 			width={'100vw'}
@@ -159,7 +166,7 @@ const OrgFormTwo = ({
 				<CheckBoxes
 					header={checkboxHeader}
 					names={checkboxOpions}
-					selected={!isEmpty(selected) ? selected : existingData.off_days}
+					selected={selected}
 					setSelected={setSelected}
 					props={props}
 				/>
@@ -209,7 +216,12 @@ const OrgFormTwo = ({
 					alignItems='space-between'>
 					<FormDropdown
 						title={isOnlineCheckboxHeader}
-						value={isOnileSelected}
+						value={
+							isOnileSelected || {
+								value : get(existingData, 'off_isonline') == 'isOnline' ? 'isOnline' : 'notOnline',
+								label : get(existingData, 'off_isonline')
+							}
+						}
 						options={[ { value: 'isOnline', label: 'Yes' }, { value: 'notOnline', label: 'No' } ]}
 						onChange={setIsOnileSelected}
 						required={true}
@@ -276,17 +288,32 @@ const OrgFormTwo = ({
 						/>
 					</StyledForm>
 				</FlexContainer>
-				{/* {console.log('isAllFilledPageTwo', isAllFilledPageTwo)} */}
-				{isAllFilledPageTwo && (
+				{(!isEmpty(pocPhone) || isAllFilledPageTwo) && (
 					<ButtonContainerX>
 						<Button
 							active
 							onClick={() =>
-								continueHandler(2, [ selected, isOnileSelected, timeSelectedStart, timeSelectedEnd ])}
+								continueHandler(2, [
+									selected,
+									isOnileSelected || {
+										value :
+											get(existingData, 'off_isonline') == 'isOnline' ? 'isOnline' : 'notOnline',
+										label : get(existingData, 'off_isonline')
+									},
+									timeSelectedStart || {
+										value : get(existingData.off_time, 'start'),
+										label : get(existingData.off_time, 'start')
+									},
+									timeSelectedEnd || {
+										value : get(existingData.off_time, 'end'),
+										label : get(existingData.off_time, 'end')
+									}
+								])}
 							text={'Continue'}
 						/>
 					</ButtonContainerX>
 				)}
+				<Spacing space={'150px'} mobileSpace={'110px'} />
 			</FlexContainer>
 		</Container>
 	);
