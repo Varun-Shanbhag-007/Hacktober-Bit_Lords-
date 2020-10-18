@@ -26,7 +26,7 @@ class OrganisationSearch():
                 ref_words.append(word.lower())
                 lemm_words.append(self.lemmatizer.lemmatize(word.lower()))
 
-        return ref_words, lemm_words
+        return list(set(ref_words)), list(set(lemm_words))
 
     @staticmethod
     def get_words_similarity(query_words, data_element_words, similarity_func):
