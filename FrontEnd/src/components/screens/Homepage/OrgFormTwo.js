@@ -62,7 +62,7 @@ const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
 				{names.map((val, idx) => (
 					<Container minWidth={'100px'}>
 						<input
-							checked={selected.includes(val)}
+							checked={!isEmpty(selected) && selected.includes(val)}
 							type='checkbox'
 							{...props}
 							onClick={() => selectedHandler(val)}
