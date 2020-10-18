@@ -10,4 +10,4 @@ class User(MainModel):
 
     @property
     def update(self):
-        return self.db_collection.update_one({"email": self.email} , {"userType":"A"})
+        return self.db_collection.update_one({"email": self.email} , {"$set":{"userType":"A"}})
