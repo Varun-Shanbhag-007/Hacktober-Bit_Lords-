@@ -151,7 +151,7 @@ const OrgFormThree = ({
 	const [ columnTherapies, setColumnTherapies ] = useState([]);
 	const [ columnTherapiesX, setColumnTherapiesX ] = useState([]);
 
-	const [ extraMed, setExtraMed ] = useState([]);
+	const [ extraMed, setExtraMed ] = useState([ 1 ]);
 	const [ extraMedX, setExtraMedX ] = useState([]);
 
 	const pageSelectionHandler = () => {
@@ -341,7 +341,7 @@ const OrgFormThree = ({
 
 				{(!isEmpty(existingData) || isAllFilledPageThree || isAllSelected) && (
 					<ButtonContainerX>
-						<Button onClick={backHandler} text={'Back'}/>
+						<Button onClick={backHandler} text={'Back'} />
 						<Button active onClick={pageSelectionHandler} text={'Continue'} />
 					</ButtonContainerX>
 				)}
