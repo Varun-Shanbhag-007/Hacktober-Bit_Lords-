@@ -62,4 +62,4 @@ def getNearbyOrgs():
             i["distance"] = dist
             result.append(i)
 
-    return make_response({"data": processData.JSONEncoder().encode(result)}, 200)
+    return make_response(jsonify({"data": processData.JSONEncoder().encode(result)}), 200)
