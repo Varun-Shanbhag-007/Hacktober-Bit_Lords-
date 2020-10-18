@@ -1,21 +1,41 @@
 import sys
 sys.path.append("../../../")
 import pandas as pd
-from OrganisationSearch import OrganisationSearch
+from app.Engine.OrgSearch.OrganisationSearch import OrganisationSearch
 from Models.nOrg import nOrg
+from Models.Categories import Categories
 import os
+import re
+from collections import Counter
+import json
+from bson import ObjectId
+import mpu
+import zipcodes
+
+def separateToLemma(data, orgSearch):
+    data = re.sub(r"[0-9*()?,.]+", "", str(data).lower())
+    words = data.split(" ")
+    data = []
+    for i in words:
+        if "/" in i:
+            for j in i.split("/"):
+                data.append(j)
+        else:
+            data.append(i)
+    words = data
+    words = [word.split(",") for word in words]
+    splitWords = []
+    for word in words:
+        for w in word:
+            if len(w) > 2:
+                splitWords.append(w)
+    ref, lem = orgSearch.refine_words(splitWords)
+    return ref, lem
 
 def processSupportWords(df, orgSearch):
     mainList = []
     for i in list(df["program_category"]):
-        words = i.lower().split(" ")
-        words = [word.split(",") for word in words]
-        splitWords = []
-        for word in words:
-            for w in word:
-                if len(w) > 2:
-                    splitWords.append(w)
-        ref, lem = orgSearch.refine_words(splitWords)
+        ref, lem = separateToLemma(i, orgSearch)
         mainList.append([ref, lem])
     return mainList
 
@@ -39,12 +59,40 @@ def processCountyColumn(df, counties):
             countyData.append(available)
     return countyData
 
+def createSetOfLemma(listOfData):
+    setData = []
+    for i in listOfData:
+        for j in i[1]:
+            setData.append(j)
+    counter = Counter(setData)
+    return counter
+
 def getCountyList():
     countyList = []
     with open("county.txt", 'r') as f:
         for line in f:
            countyList.append(line[:-1].lower())
     return countyList
+
+def calculateDistance(zip1, zip2):
+    zipcode1 = zipcodes.matching(str(zip1))
+    zipcode2 = zipcodes.matching(str(zip2))
+    z1 = (float(zipcode1[0]["lat"]),float(zipcode1[0]["long"]))
+    z2 = (float(zipcode2[0]["lat"]),float(zipcode2[0]["long"]))
+
+    dist = mpu.haversine_distance(z1,z2)
+
+    dist =round((dist/2) + (((dist/2))/4),2)
+    return dist
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 
 if __name__=="__main__":
     df = pd.read_excel(os.getcwd() + "/data.xlsx", index_col=0)
@@ -71,7 +119,9 @@ if __name__=="__main__":
                 orgData[i][columns[j]] = list(str(df.iloc[i][j]).split(","))
             else:
                 orgData[i][columns[j]] = str(df.iloc[i][j])
+
+    allCategories = Categories(createSetOfLemma(supportWords))
+    allCategories.save()
     for i in orgData:
         norg = nOrg(i)
         norg.save()
-            
