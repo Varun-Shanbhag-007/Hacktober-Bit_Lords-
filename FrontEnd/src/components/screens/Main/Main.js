@@ -64,7 +64,7 @@ const Main = (props) => {
 		return (
 			<Fragment>
 				<FCAppBar {...props} />
-				<MainRouterPage userType={userType} />
+				<MainRouterPage userType={userType} {...props}/>
 			</Fragment>
 		);
 	}
