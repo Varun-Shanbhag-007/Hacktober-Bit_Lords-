@@ -1,6 +1,6 @@
 
 Domain_Words_Map = {"Family, Children, and Survivors" : {"family", "children", "kids", "survivors", "wife", "mother", "father"},
-"Women Veterans" : {"woman veteran", "Women Veterans", "special features", "women health care", "women veteran health care", "abuse awareness", "domestic violance", "abuse awareness and prevention"},
+"Women Veterans" : {"woman veteran", "Women Veterans", "special features", "women health care", "women veteran health care", "abuse awareness", "domestic violence", "abuse awareness and prevention"},
 "Employment & Job Training" : {"job", "employement", "job opportunity", "salary", "renumeration"},
 "Legal Support" : {"advocate", "court", "judge", "law", "settlement", "suit", "law suit"},
 "Education" : {"school", "college", "university", "student", "research"},
