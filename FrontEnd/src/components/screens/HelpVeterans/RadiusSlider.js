@@ -2,9 +2,10 @@ import React, { Fragment } from 'react';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-const RadiusSlider = ({ min = 0, max = 100, step = 2, onChange, defaultValue = (min + max) / 2, setSliderValue }) => {
+const RadiusSlider = ({ min = 0, max = 100, step = 2, onChange, defaultValue = (min + max) / 2, setSliderValue , setSliderValueX}) => {
 	const handle = (value) => {
-		setSliderValue(value);
+		setSliderValue({ radiusFilter: value });
+		setSliderValueX(value);
 	};
 	return (
 		<Fragment>

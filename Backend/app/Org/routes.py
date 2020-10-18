@@ -66,4 +66,5 @@ def getNearbyOrgs():
             i["distance"] = dist
             result.append(i)
     result = [eval(processData.JSONEncoder().encode(i)) for i in result]
+    result = sorted(result, key=lambda x: x["distance"])
     return make_response(jsonify({"data": result}), 200)

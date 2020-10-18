@@ -205,22 +205,15 @@ const HomepageController = (props) => {
 			// setPocEmail()
 			// setPocPhone()
 			// setOffTime()
-
-
-
-
 		}
 
 		return setIsLoading(false);
 	};
 
-
 	console.log('offTime', offTime);
 	// console.log('orgName', orgName);
 
 	const getUserData = () => {
-		// ${process.env.REACT_APP_API_BASE_URL}/org/getOrg/emailId
-
 		axios({
 			headers : {
 				'Access-Control-Allow-Origin' : '*',
