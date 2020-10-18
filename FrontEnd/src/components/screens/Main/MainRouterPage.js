@@ -48,7 +48,7 @@ const CardTile = ({ options, ...props }) => {
 	);
 };
 
-const MainRouterPage = ({ userType, ...props }) => {
+const MainRouterPage = ({ userType, userEmail, ...props }) => {
 	let options = [];
 	if (userType == 'SU') {
 		options = [
@@ -57,6 +57,11 @@ const MainRouterPage = ({ userType, ...props }) => {
 			{ name: 'Add Admin', goTo: '/main' }
 		];
 	}
+	else if (userType == 'N') {
+		options = [ { name: 'Add/Edit Record', goTo: '/homePage' } ];
+	}
+
+	console.log('userEmail', userType, userEmail);
 
 	return (
 		<FlexContainer

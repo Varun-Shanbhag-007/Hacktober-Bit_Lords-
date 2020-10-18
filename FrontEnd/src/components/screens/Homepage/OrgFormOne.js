@@ -76,7 +76,8 @@ const OrgFormOne = ({
 	orgFax,
 	setOrgFax,
 	continueHandler,
-
+	orgName,
+	setOrgName,
 	allowLogin,
 	emailOrCell,
 	error,
@@ -99,6 +100,19 @@ const OrgFormOne = ({
 			<HeaderOne text={<p>Organization Details</p>} color={Colors.darkBlack} bold />
 
 			<FlexContainer flexDirection={'column'} mobileWidth={'266px'} width={'600px'}>
+				<StyledForm>
+					<FormInput
+						cancellable={!isEmpty(orgName)}
+						error={isAllFilled && isEmpty(orgName)}
+						errorMessage={'Please enter your Organization Name'}
+						onChange={setOrgName}
+						title={'Organization Name'}
+						value={orgName}
+						handleBlur={validateAllFields}
+						required={true}
+					/>
+				</StyledForm>
+
 				<StyledForm>
 					<FormInput
 						cancellable={!isEmpty(orgStreetAddress)}

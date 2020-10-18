@@ -7,12 +7,14 @@ import LoadingAnimationPopup from '../../Loader/loader';
 import { FlexContainer, Container, Spacing } from '../../../styles/StylingComponents';
 import { HeaderOne } from '../../../styles/Texts';
 import MainRouterPage from './MainRouterPage';
+import Cookie from 'js-cookie';
 
 const Main = (props) => {
 	const [ isLoading, setIsLoading ] = useState(true);
 	const { isAuthenticated, user } = useAuth0();
 	const [ typeFetched, settypeFetched ] = useState(false);
 	const [ userType, setUserType ] = useState('');
+	const [ userEmail, setEserEmail ] = useState('');
 
 	// On load
 	useEffect(
@@ -45,6 +47,8 @@ const Main = (props) => {
 				const data = get(response, 'data') || {};
 				setUserType(data.user_type);
 				settypeFetched(true);
+				setEserEmail(user.email);
+				Cookie.set('userEmail', user.email);
 			},
 			(err) => {
 				console.log('err', err);
@@ -64,7 +68,7 @@ const Main = (props) => {
 		return (
 			<Fragment>
 				<FCAppBar {...props} />
-				<MainRouterPage userType={userType} {...props}/>
+				<MainRouterPage userType={userType} userEmail={userEmail} {...props} />
 			</Fragment>
 		);
 	}

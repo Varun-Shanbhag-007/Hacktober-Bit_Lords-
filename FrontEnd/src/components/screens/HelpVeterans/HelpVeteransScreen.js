@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { isEmpty, get } from 'lodash';
 import LoadingAnimationPopup from '../../Loader/loader';
 import { FlexContainer, Container, Spacing } from '../../../styles/StylingComponents';
-import { HeaderOne, Note, HeaderTwo } from '../../../styles/Texts';
+import { HeaderOne, Note, HeaderTwo, Description } from '../../../styles/Texts';
 import { FormInput, FormPasswordInput, FormDropdown } from '../../../styles/Forms';
 import { Colors } from '../../../styles/Colors';
 import styled from 'styled-components';
@@ -20,6 +20,79 @@ const StyledForm = styled.div`
 		margin: 0px 0px 27px 0px;
 	}
 `;
+
+const ResultCard = ({ name = 'Lorem Ipsum Doler Set Amet Imansepet', org_site }) => {
+	return (
+		<FlexContainer flexDirection={'column'} width={'100%'}>
+			<Container
+				width={'80%'}
+				backgroundColor={Colors.lightGgreen}
+				marginBottom={'50px'}
+				marginLeft={'15%'}
+				borderRadius={'20px'}
+				padding={'20px'}>
+				<FlexContainer flexDirection={'column'}>
+					<Container width={'100%'}>
+						<Description text={<p>{name}</p>} bold={700} />
+					</Container>
+
+					<Container width={'100%'}>
+						<FlexContainer width={'100%'} flexDirection='row'>
+							<Container
+								width={'20%'}
+								height={'180px'}
+								borderRadius='10px'
+								backgroundColor={Colors.formGrey}
+							/>
+							<Container width={'80%'} paddingLeft={'20px'}>
+								<FlexContainer
+									flexDirection='column'
+									justifyContent='flex-start'
+									alignItems='flex-start'
+									textAlign='start'>
+									<Container width={'100%'}>
+										<Note
+											bold
+											text={
+												<p>{`ORGANIZATION | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+											}
+										/>
+									</Container>
+
+									<Container width={'100%'}>
+										<Note
+											bold
+											text={
+												<p>{`OPERATION | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+											}
+										/>
+									</Container>
+
+									<Container width={'100%'}>
+										<Note
+											bold
+											text={
+												<p>{`MILITARY STATUS | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+											}
+										/>
+									</Container>
+									<Container width={'100%'}>
+										<Note
+											bold
+											text={
+												<p>{`ASSISTANCES | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+											}
+										/>
+									</Container>
+								</FlexContainer>
+							</Container>
+						</FlexContainer>
+					</Container>
+				</FlexContainer>
+			</Container>
+		</FlexContainer>
+	);
+};
 
 const HelpVeteransScreen = ({
 	zipcode,
@@ -168,6 +241,10 @@ const HelpVeteransScreen = ({
 								defaultValue={[ sliderMin, sliderMax ]}
 							/>
 						</FlexContainer>
+					</FlexContainer>
+
+					<FlexContainer width='90%' flexDirection={'column'} justifyContent='center' alignItems='center'>
+						{[ 1, 2, 3 ].map((val, key) => <ResultCard />)}
 					</FlexContainer>
 				</Container>
 			</FlexContainer>

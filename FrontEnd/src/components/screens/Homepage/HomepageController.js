@@ -17,6 +17,8 @@ const HomepageController = (props) => {
 	const [ isLoading, setIsLoading ] = useState(!true);
 	const [ isAllFilled, setIsAllFilled ] = useState(false);
 	const [ showPage, setShowPage ] = useState(1);
+	const [ orgName, setOrgName ] = useState('');
+	const userEmailId = Cookie.get('userEmail');
 	const [ orgStreetAddress, setOrgStreetAddress ] = useState('');
 	const [ zipCode, setZipCode ] = useState('');
 	const [ orgStateName, setOrgStateName ] = useState('');
@@ -30,14 +32,11 @@ const HomepageController = (props) => {
 	const [ orgFax, setOrgFax ] = useState('');
 
 	// orgStreetAddress, zipCode, orgStateName, orgCityName, OrgWebsite, orgEmail, orgFax
-	const [ completeData, setCompleteData ] = useState({
-		org_name  : 'ORG_NAME',
-		org_ph_no : '3125398877',
-		org_key   : 'asdgj@df.com'
-	});
+	const [ completeData, setCompleteData ] = useState({});
 
 	const validateAllFields = () => {
-		!isEmpty(orgStreetAddress) &&
+		!isEmpty(orgName) &&
+			!isEmpty(orgStreetAddress) &&
 			!isZipError &&
 			!isEmpty(orgStateName) &&
 			!isEmpty(orgCityName) &&
@@ -202,11 +201,14 @@ const HomepageController = (props) => {
 	);
 
 	const continueHandler = (pageNum, content) => {
-		console.log('content', content);
+		// console.log('content', content);
+
 		let data = {};
 		switch (pageNum) {
 			case 1:
 				data = {
+					org_name           : orgName,
+					org_key            : userEmailId,
 					org_street_address : orgStreetAddress,
 					org_zip            : zipCode,
 					org_state          : orgStateName,
@@ -259,7 +261,7 @@ const HomepageController = (props) => {
 	};
 
 	console.log('All content', completeData);
-	console.log('showPage', showPage);
+	// console.log('userEmail', Cookie.get('userEmail'));
 
 	// Screen Returns
 	switch (showPage) {
@@ -269,6 +271,8 @@ const HomepageController = (props) => {
 					isLoading={isLoading}
 					isAllFilled={isAllFilled}
 					validateAllFields={validateAllFields}
+					orgName={orgName}
+					setOrgName={setOrgName}
 					orgStreetAddress={orgStreetAddress}
 					setOrgStreetAddress={setOrgStreetAddress}
 					zipCode={zipCode}
