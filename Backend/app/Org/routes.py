@@ -6,11 +6,14 @@ import app.Engine.OrgSearch.processData as processData
 from Models.nOrg import nOrg
 from app.Engine.OrgSearch.OrganisationSearch import OrganisationSearch
 from flask_cors import CORS, cross_origin
+from datetime import datetime
 
 @bp.route('/org/addOrgData', methods = ['POST'])
 @cross_origin()
 def saveData():
     val = request.get_json(force=True)
+    current_time = str(datetime.now().date())
+    val["last_updated"] = current_time
     data = {"org_key": val["org_key"]}
     org = Org(data)
     if org.find:
@@ -33,6 +36,7 @@ def getOrg(email):
         return make_response(jsonify({"status":"new_user"}), 200)
     else:
         return make_response(dumps(val), 200)
+
 
 @bp.route('/org/getNearbyOrg', methods=['POST'])
 @cross_origin()
