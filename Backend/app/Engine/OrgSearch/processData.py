@@ -11,9 +11,11 @@ import json
 from bson import ObjectId
 import mpu
 import zipcodes
+from app.Engine.OrgSearch.WordAssoc import Domain_Words_Map
 
 def separateToLemma(data, orgSearch):
-    data = re.sub(r"[0-9*()?,.]+", "", str(data).lower())
+    data = re.sub(r"[0-9*()?/.,]+", " ", str(data).lower())
+    data = re.sub(r"\s+", " ", data)
     words = data.split(" ")
     data = []
     for i in words:
@@ -32,9 +34,16 @@ def separateToLemma(data, orgSearch):
     ref, lem = orgSearch.refine_words(splitWords)
     return ref, lem
 
+def addCustomWordAssociations(data):
+    for key, value in Domain_Words_Map.items():
+        if key in data:
+            data+=" " + " ".join(value)
+    return data
+
 def processSupportWords(df, orgSearch):
     mainList = []
     for i in list(df["program_category"]):
+        i = addCustomWordAssociations(i)
         ref, lem = separateToLemma(i, orgSearch)
         mainList.append([ref, lem])
     return mainList

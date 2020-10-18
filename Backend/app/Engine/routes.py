@@ -18,7 +18,7 @@ def get_zipcode_info(zipcode_str):
 
     zipcode_info = zipcodes.matching(zipcode_str)
     result = {__IS_VALID__:False, __CITY__: None, __STATE__: None}
-    if zipcode_info :
+    if zipcode_info:
         result[__IS_VALID__] = True
         result[__CITY__] = zipcode_info[0]["city"]
         result[__STATE__] = zipcode_info[0]["state"]
