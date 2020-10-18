@@ -5,11 +5,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { isEmpty, get } from 'lodash';
 import LoadingAnimationPopup from '../../Loader/loader';
 import { FlexContainer, Container, Spacing } from '../../../styles/StylingComponents';
-import { HeaderOne, Note, HeaderTwo, Description } from '../../../styles/Texts';
+import { HeaderOne, Note, HeaderTwo, HeaderThree, Description } from '../../../styles/Texts';
 import { FormInput, FormPasswordInput, FormDropdown } from '../../../styles/Forms';
 import { Colors } from '../../../styles/Colors';
 import styled from 'styled-components';
 import RadiusSlider from './RadiusSlider';
+import { Button } from '../../../styles/Button';
 
 const StyledForm = styled.div`
 	@media (max-width: 768px) {
@@ -21,30 +22,102 @@ const StyledForm = styled.div`
 	}
 `;
 
-const ResultCard = ({ name = 'Lorem Ipsum Doler Set Amet Imansepet', org_site }) => {
+const ButtonContainerX = styled.div`
+	position: fixed;
+	bottom: 0;
+	height: 176px;
+	padding-left: 2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	@media (max-width: 768px) {
+		height: 120px;
+	}
+`;
+
+const CheckBoxes = ({ header, names, selected, setSelected, props }) => {
+	const selectedHandler = (val) => {
+		let values = [];
+		if (isEmpty(selected)) {
+			selected = [];
+		}
+		if (selected.includes(val)) {
+			values = selected.filter((curr, idx) => curr !== val);
+		}
+		else {
+			values = [ ...selected, val ];
+		}
+		setSelected(values);
+	};
+	return (
+		<Container>
+			<FlexContainer marginBottom={'30px'}>
+				<HeaderThree text={header} bold />
+			</FlexContainer>
+
+			<FlexContainer mobileWidth={'266px'} width={'600px'} flexDirection='column' alignItems='flex-start'>
+				{names.map((val, idx) => (
+					<FlexContainer minWidth={'100px'} justifyContent='center' alignItems='center'>
+						<input
+							checked={!isEmpty(selected) && selected.includes(val)}
+							type='checkbox'
+							{...props}
+							onClick={() => selectedHandler(val)}
+							style={{ padding: '20px', transform: 'scale(1.5)' }}
+						/>
+						<Container width={'20px'} />
+						<Note text={<p>{val}</p>} />
+					</FlexContainer>
+				))}
+			</FlexContainer>
+		</Container>
+	);
+};
+
+const ResultCard = ({ val, zipcode }) => {
 	return (
 		<FlexContainer flexDirection={'column'} width={'100%'}>
 			<Container
 				width={'80%'}
-				backgroundColor={Colors.lightGgreen}
+				border={'2px solid #E8E8E8'}
+				backgroundColor={'#f9f9f9'}
+				boxShadow={'5px #292929'}
 				marginBottom={'50px'}
-				marginLeft={'15%'}
-				borderRadius={'20px'}
+				marginLeft={'10%'}
+				borderRadius={'2px'}
 				padding={'20px'}>
 				<FlexContainer flexDirection={'column'}>
-					<Container width={'100%'}>
-						<Description text={<p>{name}</p>} bold={700} />
+					<Container width={'100%'} paddingTop={'0px'} paddingBottom={'20px'}>
+						<FlexContainer flexDirection='row' justifyContent={'center'} alignItems={'center'}>
+							<HeaderThree text={<p>{val.org_name}</p>} bold={700} color={Colors.darkGreen} />
+							<Container width='20px' height='20px' />
+							<Note
+								text={<p>{`${val.distance} Miles from ${zipcode}`}</p>}
+								color={Colors.errorRed}
+								bold={700}
+							/>
+						</FlexContainer>
+						<Container width={'100%'}>
+							<Note
+								bold
+								text={
+									<p>{`${val.org_site} | ${val.org_ph_no} | ${val.org_street_address}, ${val.org_state}, ${val.org_city}, ${val.org_zip}`}</p>
+								}
+								color={Colors.darkestGrey}
+							/>
+						</Container>
 					</Container>
 
 					<Container width={'100%'}>
 						<FlexContainer width={'100%'} flexDirection='row'>
-							<Container
+							{/* <Container
 								width={'20%'}
-								height={'180px'}
+								height={'160px'}
 								borderRadius='10px'
-								backgroundColor={Colors.formGrey}
-							/>
-							<Container width={'80%'} paddingLeft={'20px'}>
+								backgroundColor={Colors.lightGgreen}
+							/> */}
+							<Container width={'100%'} paddingLeft={'20px'}>
 								<FlexContainer
 									flexDirection='column'
 									justifyContent='flex-start'
@@ -54,7 +127,7 @@ const ResultCard = ({ name = 'Lorem Ipsum Doler Set Amet Imansepet', org_site })
 										<Note
 											bold
 											text={
-												<p>{`ORGANIZATION | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+												<p>{`POC | Email ${val.poc_email} | Name: ${val.poc_name} | Title: ${val.poc_title} | Phone: ${val.poc_ph_no}`}</p>
 											}
 										/>
 									</Container>
@@ -63,24 +136,13 @@ const ResultCard = ({ name = 'Lorem Ipsum Doler Set Amet Imansepet', org_site })
 										<Note
 											bold
 											text={
-												<p>{`OPERATION | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
-											}
-										/>
-									</Container>
-
-									<Container width={'100%'}>
-										<Note
-											bold
-											text={
-												<p>{`MILITARY STATUS | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
-											}
-										/>
-									</Container>
-									<Container width={'100%'}>
-										<Note
-											bold
-											text={
-												<p>{`ASSISTANCES | Email ${'org_site'} Address: org_street_address, org_state, org_city, org_zip, General Mail: ${'org_mail'}`}</p>
+												<p>{`MILITARY | Status ${val.military_status.map(
+													(val) => val
+												)} | Service Era: ${val.serivce_era.map(
+													(el) => el
+												)} | Discharge Status: ${val.discharge_status.map(
+													(el) => el
+												)} | Is Combat Service: ${val.is_combat_service}`}</p>
 											}
 										/>
 									</Container>
@@ -95,6 +157,7 @@ const ResultCard = ({ name = 'Lorem Ipsum Doler Set Amet Imansepet', org_site })
 };
 
 const HelpVeteransScreen = ({
+	isLoading,
 	zipcode,
 	setZipcode,
 	isZipError,
@@ -103,12 +166,41 @@ const HelpVeteransScreen = ({
 	searchKey,
 	setSearchKey,
 	validateSearch,
+	validateSearchQuery,
 	selectedcategory,
-	setSelectedcategory
+	setSelectedcategory,
+	allData,
+	allDataFetched,
+	catNames = [
+		'Family, Children, and Survivors',
+		'Women Veterans',
+		'Employment & Job Training',
+		'Legal Support',
+		'Education',
+		'Homelessness & Housing',
+		'Benefits',
+		'Emergency Financial Assistance',
+		'Financial Literacy',
+		'Behavioral Health/Mental Health',
+		'Food Insecurity',
+		'Transportation',
+		'Medical',
+		'Dental'
+	],
+	filters,
+	FilterHandler
 }) => {
-	const sliderMin = 10;
-	const sliderMax = 150;
+	const sliderMin = 1;
+	const sliderMax = 100;
 	const [ sliderValue, setSliderValue ] = useState((sliderMin + sliderMax) / 2);
+	useEffect(
+		() => {
+			setSliderValue((sliderMin + sliderMax) / 2);
+		},
+		[ sliderMin, sliderMax ]
+	);
+
+	console.log('Inside', filters);
 
 	return (
 		<Container paddingTop={'70px'}>
@@ -118,6 +210,7 @@ const HelpVeteransScreen = ({
 				height={'90vh'}
 				alignItems={'space-between'}
 				justify-conent={'space-between'}>
+				<LoadingAnimationPopup showPopup={isLoading || !allDataFetched} />
 				<Container
 					width={'29%'}
 					backgroundColor={Colors.lightGgreen}
@@ -157,19 +250,11 @@ const HelpVeteransScreen = ({
 										handleBlur={validateSearch}
 									/>
 								</StyledForm>
-								<FormDropdown
-									title={'Category'}
-									value={selectedcategory}
-									options={[
-										{ value: 'CAT1', label: 'CAT1' },
-										{ value: 'CAT1', label: 'CAT1' },
-										{ value: 'CAT1', label: 'CAT1' },
-										{ value: 'CAT1', label: 'CAT1' },
-										{ value: 'CAT1', label: 'CAT1' },
-										{ value: 'CAT1', label: 'CAT1' }
-									]}
-									onChange={setSelectedcategory}
-									handleBlur={validateSearch}
+								<CheckBoxes
+									header={'Category'}
+									names={catNames}
+									selected={selectedcategory}
+									setSelected={setSelectedcategory}
 								/>
 							</Fragment>
 						)}
@@ -219,9 +304,31 @@ const HelpVeteransScreen = ({
 									onChange={setSelectedcategory}
 									handleBlur={validateSearch}
 								/>
-								<Spacing space={'150px'} />
+								{/* <Spacing space={'150px'} />
+								{'!isEmpty(filters)' && (
+									<ButtonContainerX>
+										<Button active onClick={validateSearchQuery} text={'Continue'} />
+									</ButtonContainerX>
+								)}
+								<Spacing space={'150px'} /> */}
 							</Fragment>
 						)}
+
+						{(!isZipError &&
+							!isEmpty(zipcode) &&
+							zipcode.length === 5 &&
+							(!isEmpty(selectedcategory) || !isEmpty(searchKey))) ||
+							(filters.length > 0 && (
+								<Fragment>
+									<Spacing space={'150px'} />
+									{'!isEmpty(filters)' && (
+										<ButtonContainerX>
+											<Button active onClick={validateSearchQuery} text={'Continue'} />
+										</ButtonContainerX>
+									)}
+									<Spacing space={'150px'} />
+								</Fragment>
+							))}
 					</FlexContainer>
 				</Container>
 
@@ -232,19 +339,33 @@ const HelpVeteransScreen = ({
 						alignItems='center'
 						width={'100%'}
 						height={'100px'}>
-						<HeaderTwo text={`Filter with Radius in : ${sliderValue} Miles`} bold={700} />
+						<HeaderTwo text={`Filter with Radius in : ${sliderValue} Miles`} bold={700} color={'#2eb62c'} />
 						<FlexContainer width='50%' height='20px'>
 							<RadiusSlider
 								min={sliderMin}
 								max={sliderMax}
-								setSliderValue={setSliderValue}
-								defaultValue={[ sliderMin, sliderMax ]}
+								setSliderValue={FilterHandler}
+								setSliderValueX={setSliderValue}
+								defaultValue={sliderValue}
 							/>
 						</FlexContainer>
 					</FlexContainer>
 
-					<FlexContainer width='90%' flexDirection={'column'} justifyContent='center' alignItems='center'>
-						{[ 1, 2, 3 ].map((val, key) => <ResultCard />)}
+					<FlexContainer flexDirection={'column'} justifyContent='center' alignItems='center'>
+						{allData.length > 0 ? (
+							allData.map((val, key) => <ResultCard key={val._id} val={val} zipcode={zipcode} />)
+						) : (
+							allDataFetched && (
+								<FlexContainer
+									flexDirection={'row'}
+									justifyContent={'center'}
+									alignItems='center'
+									style={{ fontSize: '30px', color: 'red' }}
+									marginTop={'25%'}>
+									<p>No Results found. Search Again.</p>
+								</FlexContainer>
+							)
+						)}
 					</FlexContainer>
 				</Container>
 			</FlexContainer>

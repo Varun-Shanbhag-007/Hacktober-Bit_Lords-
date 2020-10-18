@@ -24,7 +24,7 @@ const Colors = {
 	darkestGrey        : '#484F5E',
 	darkGrey           : '#757985',
 	mediumGrey         : '#E8E8E8',
-	lightGrey          : '#F0F0F0',
+	// lightGrey          : '#F0F0F0',
 	lightestGrey       : '#F9F9F9',
 
 	// Colors
