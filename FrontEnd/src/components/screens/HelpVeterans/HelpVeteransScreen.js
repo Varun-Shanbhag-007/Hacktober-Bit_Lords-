@@ -211,6 +211,7 @@ const HelpVeteransScreen = ({
 	);
 
 	const removeFiltersHandler = () => {
+		validateSearchQuery(true);
 		setFilters([]);
 		setfilterMilitary('');
 		setdisabilityfilter('');

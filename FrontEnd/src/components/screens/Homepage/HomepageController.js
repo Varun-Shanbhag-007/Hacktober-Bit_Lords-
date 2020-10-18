@@ -287,6 +287,26 @@ const HomepageController = (props) => {
 		);
 	};
 
+	// Post Data
+	const updateUserType = (mailId) => {
+		axios({
+			headers : {
+				'Access-Control-Allow-Origin' : '*',
+				'Content-Type'                : 'application/json'
+			},
+			method  : 'GET',
+			mode    : 'cors',
+			url     : `${process.env.REACT_APP_API_BASE_URL}/makeadmin/${mailId}`
+		}).then(
+			(response) => {
+				console.log('response', response);
+			},
+			(err) => {
+				console.log('err', err);
+			}
+		);
+	};
+
 	useEffect(
 		() => {
 			if (!isEmpty(completeData.particaption_list)) {
@@ -367,7 +387,7 @@ const HomepageController = (props) => {
 		);
 	}
 	if (showAdminPage) {
-		return <MakeAdminPage setshowAdminPage={setshowAdminPage} props={props} />;
+		return <MakeAdminPage setshowAdminPage={setshowAdminPage} updateUserType={updateUserType} props={props} />;
 	}
 	else {
 		switch (showPage) {

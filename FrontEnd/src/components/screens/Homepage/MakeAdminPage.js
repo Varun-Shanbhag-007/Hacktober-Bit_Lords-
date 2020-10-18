@@ -36,17 +36,17 @@ const ButtonContainerX = styled.div`
 	}
 `;
 
-const MakeAdminPage = ({ setshowAdminPage, props }) => {
+const MakeAdminPage = ({ setshowAdminPage, updateUserType, props }) => {
 	const [ val, setVal ] = useState('');
 
 	const makeAdmin = () => {
-		// Make API Call
+		updateUserType(val);
 		console.log('Made Admin');
 	};
 
 	return (
 		<FlexContainer justifyContent='center' alignItems='center' width={'100vw'} paddingTop='10%' paddingBottom='10%'>
-            <FCAppBar {...props} />
+			<FCAppBar {...props} />
 			<FlexContainer flexDirection={'column'} mobileWidth={'266px'} width={'600px'}>
 				<Spacing space={'50px'} mobileSpace={'50px'} />
 				<StyledForm>

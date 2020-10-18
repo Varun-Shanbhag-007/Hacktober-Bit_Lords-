@@ -66,8 +66,7 @@ const HelpVeteransController = (props) => {
 		);
 	};
 
-	const ProcessData = () => {
-	};
+	const ProcessData = () => {};
 
 	useEffect(
 		() => {
@@ -138,14 +137,20 @@ const HelpVeteransController = (props) => {
 	};
 
 	const validateSearchQuery = (value) => {
-
 		setIsLoading(true);
 		if (value) {
 			getOrgData();
 		}
 		filterAllData();
-		setIsLoading(false);
+		// setIsLoading(false);
 	};
+
+	useEffect(
+		() => {
+			setIsLoading(false);
+		},
+		[ allData ]
+	);
 
 	useEffect(
 		() => {
@@ -177,6 +182,7 @@ const HelpVeteransController = (props) => {
 			validateSearch={validateSearch}
 			setApiCall={setApiCall}
 			ApiCall={ApiCall}
+			setIsLoading={setIsLoading}
 		/>
 	);
 };
