@@ -201,7 +201,7 @@ const OrgFormThree = ({
 			if (!isEmpty(existingData)) {
 				setSelectedMilitary(existingData.program_category);
 				setColumnTherapies(existingData.medical_therapy);
-				setExtraMed(existingData.medical_service);
+				setExtraMed(existingData.medical_service || []);
 				setIsPeerSupported({ value: 'isPeerSupported', label: existingData.is_peer_support || 'No' });
 				setIsHotlineSupported({ value: 'isPeerSupported', label: existingData.is_hotline || 'No' });
 			}
